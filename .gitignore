@@ -1,0 +1,10 @@
+# Ejecutable y archivos de compilación
+/point_cloud_collimation
+*.o
+
+# Reconstrucción generada; los CSV requeridos se guardan en cada ejercicio
+/reconstruction/
+
+# Archivos temporales del editor
+*~
+*.swp
