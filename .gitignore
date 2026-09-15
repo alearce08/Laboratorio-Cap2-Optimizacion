@@ -8,3 +8,11 @@
 # Archivos temporales del editor
 *~
 *.swp
+
+# Datos brutos generados por profiling
+angie_perf*.data
+angie_gperftools*.prof
+angie_callgrind*.out
+
+# Archivos generados por --export
+reconstruction/
