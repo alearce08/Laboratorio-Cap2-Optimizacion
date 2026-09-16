@@ -22,13 +22,13 @@ pueden variar entre integrantes.
 
 | Especificación | Angie | Milagro | Brayan | Alejandro |
 |---|---|---|---|---|
-| Procesador | Intel Core i5-10210U | Pendiente | Pendiente | Pendiente |
-| Núcleos / hilos | 4 / 8 | Pendiente | Pendiente | Pendiente |
-| Memoria RAM | 16 GB | Pendiente | Pendiente | Pendiente |
-| Sistema operativo | Ubuntu 22.04.5 LTS | Pendiente | Pendiente | Pendiente |
-| Arquitectura | x86-64 | Pendiente | Pendiente | Pendiente |
-| Kernel | 6.8.0-138-generic | Pendiente | Pendiente | Pendiente |
-| Compilador | GCC/G++ 11.4 | Pendiente | Pendiente | Pendiente |
+| Procesador | Intel Core i5-10210U | Pendiente | AMD Ryzen 7 5700U with Radeon Graphics | Pendiente |
+| Núcleos / hilos | 4 / 8 | Pendiente | 8 / 16 | Pendiente |
+| Memoria RAM | 16 GB | Pendiente | 16 GB | Pendiente |
+| Sistema operativo | Ubuntu 22.04.5 LTS | Pendiente | Ubuntu 24.04.5 LTS| Pendiente |
+| Arquitectura | x86-64 | Pendiente | Px86-64 | Pendiente |
+| Kernel | 6.8.0-138-generic | Pendiente | 	7.0.0-31-generic | Pendiente |
+| Compilador | GCC/G++ 11.4 | Pendiente | GCC/G++ 13.3.0 | Pendiente |
 
 Los resultados obtenidos deben interpretarse considerando las diferencias
 entre los equipos utilizados por cada integrante.
@@ -199,11 +199,57 @@ Los archivos obtenidos se encuentran en la carpeta [`Brayan/`](./Brayan/).
 
 ### 4.1 Hotspots identificados
 
-**perf:** Pendiente.
+#### Perf
 
-**Google Performance Tools:** Pendiente.
+En la ejecución normal, 'perf report' identificó a 'GridIndex::nearest()' como el
+hotspot dominante con **97.74 % Children** (tiempo de muestreo acumulado más lo que la 
+función llama) y **96.72 % Self (tiempo solo de la función, sin llamadas internas) **.
 
-**Valgrind / Callgrind:** Pendiente.
+En la ejecución con '--export', el árbol de llamadas muestra:
+
+```text
+main
+├── compare_profiles() → nearest_neighbor_distances() → GridIndex::nearest()   (57.34%)
+├── GridIndex::nearest()  (llamada directa)                                    (29.03%)
+└── export_reconstruction()                                                    (11.24%)
+    └── write_cloud_csv() → formateo de doubles (ostream/printf_fp)            (9.91%)
+```
+
+Esto quiere decir que entre ambas rutas de llamada, 'GridIndex::nearest()' sigue concentrando
+hasta un **86 %** de los ciclos mientras que la exportación añade un **11 %** adicional.
+
+#### Google Performance Tools
+
+En la ejecución normal se obtuvieron 3375 muestras. 'GridIndex::nearest()' representó:
+
+- 94.9 % de las muestras dentro de la funcion misma (`flat`).
+- 97.0 % de las muestras `flat` más subárbol de llamadas  (`cum`).
+
+Con '--export' fueron 3730 muestras. 'GridIndex::nearest()' bajó levemente 86.9 % `flat` / 89.1 % `cum`
+`export reconstruction` aparece con 8.7 % `cum` el cual tiene su reparto en otras funciones como
+`write_cloud_csv`, `std::num_put::_M_insert_float` y `std::ostream::_M_insert`.
+
+Un detalle a mencionar, es que en este equipo `google-pprof` no logró resolver los símbolos del binario 
+original, por lo que se compiló con la bandera `-no-pie` para obtener legibilidad. Entonces, estas
+muestras provienen de un binario distinto a las otras, pero el comportamiento del programa y el hotspot
+no se ven realmente afectados.
+
+#### Valgrind / Callgrind
+
+Para este perfilado solo se usó la ejecución de `point_cloud_colimation` normal, la cual reveló hasta
+207,961,170,394 instrucciones totales. Esta es la tabla que engloba el código asociado a 'GridIndex::nearest()',
+que incluye el trabajo dentro de la función. 
+
+| Origen | Ir | % |
+|---|---:|---:|
+| `GridIndex::nearest` (cuerpo propio) | 168,662,797,252 | 81.10 % |
+| `stl_vector.h` | 20,804,515,668 | 10.00 % |
+| `hashtable.h` | 6,421,932,315 | 3.09 % |
+| `hashtable_policy.h` | 4,139,601,854 | 1.99 % |
+| `stl_algobase.h` | 3,680,330,298 | 1.77 % |
+| `stl_function.h` | 617,513,896 | 0.30 % |
+| `stl_iterator.h` | 214,381,544 | 0.10 % |
+| **Total atribuible a `nearest`** | **~204,541 M** | **~98.35 %** |
 
 ### 4.2 ¿Coinciden los resultados de las tres herramientas?
 

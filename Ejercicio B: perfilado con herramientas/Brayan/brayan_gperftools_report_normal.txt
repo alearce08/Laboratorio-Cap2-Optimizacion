@@ -1,0 +1,23 @@
+Using local file ./point_cloud_collimation.
+Using local file point_cloud_normal.prof.
+Total: 3375 samples
+    3204  94.9%  94.9%     3275  97.0% GridIndex::nearest
+      32   0.9%  95.9%       32   0.9% std::max (inline)
+      13   0.4%  96.3%       13   0.4% std::_Hashtable::find (inline)
+      12   0.4%  96.6%       12   0.4% GridIndex::cell_of (inline)
+      11   0.3%  96.9%       11   0.3% __memcpy_avx_unaligned_erms
+      10   0.3%  97.2%       10   0.3% __gnu_cxx::__normal_iterator::__normal_iterator (inline)
+       9   0.3%  97.5%       16   0.5% std::_Hashtable::_M_find_before_node (inline)
+       9   0.3%  97.8%       15   0.4% std::__unguarded_partition (inline)
+       7   0.2%  98.0%        7   0.2% GridIndex::key (inline)
+       6   0.2%  98.2%        6   0.2% libc_feholdsetround_sse_ctx
+       6   0.2%  98.3%        6   0.2% std::__detail::_Hashtable_base::_M_equals (inline)
+       6   0.2%  98.5%        6   0.2% std::__new_allocator::construct (inline)
+       5   0.1%  98.7%        5   0.1% compare_profiles [clone .constprop.0] (inline)
+       5   0.1%  98.8%     2175  64.4% nearest_neighbor_distances [clone .constprop.0]
+       4   0.1%  98.9%        4   0.1% std::vector::operator[] (inline)
+       3   0.1%  99.0%       14   0.4% std::vector::emplace_back (inline)
+       2   0.1%  99.1%        2   0.1% __brk
+       2   0.1%  99.1%        2   0.1% __gnu_cxx::__normal_iterator::operator++ (inline)
+       2   0.1%  99.2%        2   0.1% __gnu_cxx::__normal_iterator::operator-- (inline)
+
