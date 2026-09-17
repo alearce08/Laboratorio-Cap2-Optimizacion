@@ -1,0 +1,30 @@
+
+ Performance counter stats for './point_cloud_collimation':
+
+               339      context-switches                 #      9.7 cs/sec  cs_per_second     
+                 0      cpu-migrations                   #      0.0 migrations/sec  migrations_per_second
+            44,008      page-faults                      #   1252.9 faults/sec  page_faults_per_second
+         35,124.10 msec task-clock                       #      1.0 CPUs  CPUs_utilized       
+     <not counted>      cpu_core/branch-misses/          #      nan %  branch_miss_rate         (0.00%)
+     <not counted>      cpu_core/branches/               #      nan M/sec  branch_frequency     (0.00%)
+     <not counted>      cpu_core/cpu-cycles/             #      nan GHz  cycles_frequency       (0.00%)
+     <not counted>      cpu_core/instructions/           #      nan instructions  insn_per_cycle  (0.00%)
+       528,361,104      cpu_atom/branch-misses/          #      1.9 %  branch_miss_rate         (50.00%)
+    27,351,255,820      cpu_atom/branches/               #    778.7 M/sec  branch_frequency     (50.00%)
+   122,050,547,376      cpu_atom/cpu-cycles/             #      3.5 GHz  cycles_frequency       (50.00%)
+   205,949,658,274      cpu_atom/instructions/           #      1.7 instructions  insn_per_cycle  (50.00%)
+             TopdownL1 (cpu_core)                        #      0.0 %  tma_bad_speculation    
+                                                         #      nan %  tma_frontend_bound       (0.00%)
+                                                         #      nan %  tma_backend_bound      
+                                                         #      nan %  tma_retiring             (0.00%)
+             TopdownL1 (cpu_atom)                        #     21.4 %  tma_backend_bound        (60.00%)
+                                                         #     29.1 %  tma_frontend_bound       (60.00%)
+                                                         #     15.2 %  tma_bad_speculation    
+                                                         #     34.3 %  tma_retiring             (60.00%)
+
+      35.128642047 seconds time elapsed
+
+      35.047119000 seconds user
+       0.077993000 seconds sys
+
+

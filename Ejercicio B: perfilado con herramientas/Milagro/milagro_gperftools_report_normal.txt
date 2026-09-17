@@ -1,0 +1,28 @@
+File: point_cloud_collimation
+Type: cpu
+Showing nodes accounting for 34.01s, 97.48% of 34.89s total
+Dropped 70 nodes (cum <= 0.17s)
+      flat  flat%   sum%        cum   cum%
+    25.09s 71.91% 71.91%     34.17s 97.94%  GridIndex::nearest
+     5.69s 16.31% 88.22%      7.08s 20.29%  std::_Hashtable::_M_find_before_node (inline)
+     1.39s  3.98% 92.20%      1.39s  3.98%  std::__detail::_Mod_range_hashing::operator() (inline)
+     1.35s  3.87% 96.07%      1.35s  3.87%  std::equal_to::operator() (inline)
+     0.35s  1.00% 97.08%      0.35s  1.00%  std::vector::operator[] (inline)
+     0.05s  0.14% 97.22%      8.32s 23.85%  std::_Hashtable::_M_locate (inline)
+     0.04s  0.11% 97.33%      1.43s  4.10%  std::_Hashtable::_M_bucket_index (inline)
+     0.03s 0.086% 97.42%     34.86s 99.91%  collimate_icp
+     0.01s 0.029% 97.45%     23.29s 66.75%  compare_profiles
+     0.01s 0.029% 97.48%     22.76s 65.23%  nearest_neighbor_distances
+         0     0% 97.48%      0.27s  0.77%  GridIndex::GridIndex
+         0     0% 97.48%     34.89s   100%  __libc_start_call_main
+         0     0% 97.48%     34.89s   100%  __libc_start_main_impl
+         0     0% 97.48%     34.89s   100%  _start
+         0     0% 97.48%     34.89s   100%  main
+         0     0% 97.48%      0.18s  0.52%  std::_Hashtable::_M_find_node (inline)
+         0     0% 97.48%      8.34s 23.90%  std::_Hashtable::find (inline)
+         0     0% 97.48%      1.39s  3.98%  std::__detail::_Hash_code_base::_M_bucket_index (inline)
+         0     0% 97.48%      1.35s  3.87%  std::__detail::_Hashtable_base::_M_equals (inline)
+         0     0% 97.48%      1.35s  3.87%  std::__detail::_Hashtable_base::_M_key_equals (inline)
+         0     0% 97.48%      0.20s  0.57%  std::__detail::_Map_base::operator[] (inline)
+         0     0% 97.48%      8.34s 23.90%  std::unordered_map::find (inline)
+         0     0% 97.48%      0.20s  0.57%  std::unordered_map::operator[] (inline)
