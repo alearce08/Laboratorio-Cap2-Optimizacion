@@ -380,12 +380,12 @@ se compararán las mediciones considerando las diferencias de hardware.
 
 | Métrica | Angie | Milagro | Brayan | Alejandro |
 |---|---:|---:|---:|---:|
-| Tiempo normal (s) | 43.63 | Pendiente | Pendiente | Pendiente |
-| Tiempo `--export` (s) | 48.99 | Pendiente | Pendiente | Pendiente |
-| Incremento de tiempo (%) | 12.3 | Pendiente | Pendiente | Pendiente |
-| Hotspot principal (`perf`) | `GridIndex::nearest()` | Pendiente | Pendiente | Pendiente |
-| Hotspot principal (gperftools) | `GridIndex::nearest()` | Pendiente | Pendiente | Pendiente |
-| Hotspot principal (Callgrind) | `GridIndex::nearest()` | Pendiente | Pendiente | Pendiente |
+| Tiempo normal (s) | 43.63 | 33.52 | Pendiente | Pendiente |
+| Tiempo `--export` (s) | 48.99 | 36.60 | Pendiente | Pendiente |
+| Incremento de tiempo (%) | 12.3 | 9.17 | Pendiente | Pendiente |
+| Hotspot principal (`perf`) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | Pendiente |
+| Hotspot principal (gperftools) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | Pendiente |
+| Hotspot principal (Callgrind) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | Pendiente |
 
 Esta comparación permitirá determinar qué características del comportamiento
 son consistentes entre diferentes equipos y cuáles dependen del hardware
