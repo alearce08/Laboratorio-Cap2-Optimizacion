@@ -22,13 +22,13 @@ pueden variar entre integrantes.
 
 | Especificación | Angie | Milagro | Brayan | Alejandro |
 |---|---|---|---|---|
-| Procesador | Intel Core i5-10210U | Intel Core i7-12700H | AMD Ryzen 7 5700U with Radeon Graphics | Pendiente |
-| Núcleos / hilos | 4 / 8 | 14 / 20 | 8 / 16 | Pendiente |
-| Memoria RAM | 16 GB | 16 GB | 16 GB | Pendiente |
-| Sistema operativo | Ubuntu 22.04.5 LTS | Ubuntu 26.04 LTS | Ubuntu 24.04.5 LTS| Pendiente |
-| Arquitectura | x86-64 | x86-64 | Px86-64 | Pendiente |
-| Kernel | 6.8.0-138-generic | 7.0.0-31-generic | 	7.0.0-31-generic | Pendiente |
-| Compilador | GCC/G++ 11.4 | GCC/G++ 15.2.0 | GCC/G++ 13.3.0 | Pendiente |
+| Procesador | Intel Core i5-10210U | Intel Core i7-12700H | AMD Ryzen 7 5700U with Radeon Graphics | Intel Core i9-13900HX |
+| Núcleos / hilos | 4 / 8 | 14 / 20 | 8 / 16 | 24 / 32 |
+| Memoria RAM | 16 GB | 16 GB | 16 GB | 32 GB  |
+| Sistema operativo | Ubuntu 22.04.5 LTS | Ubuntu 26.04 LTS | Ubuntu 24.04.5 LTS | Ubuntu 24.04.5 LTS |
+| Arquitectura | x86-64 | x86-64 | x86-64 | x86-64 |
+| Kernel | 6.8.0-138-generic | 7.0.0-31-generic | 7.0.0-31-generic | 7.0.0-31-generic |
+| Compilador | GCC/G++ 11.4 | GCC/G++ 15.2.0 | GCC/G++ 13.3.0 | GCC/G++ 13.3.0 |
 
 Los resultados obtenidos deben interpretarse considerando las diferencias
 entre los equipos utilizados por cada integrante.
@@ -351,42 +351,105 @@ Pendiente.
 
 Los archivos obtenidos se encuentran en la carpeta [`Alejandro/`](./Alejandro/).
 
+Nota: `perf stat` y `perf record` se ejecutaron con y sin `--export`. Valgrind/Callgrind y Google Performance Tools se ejecutaron únicamente sin exportación, siguiendo la aclaración del profesor.
+
 ### 5.1 Hotspots identificados
 
-**perf:** Pendiente.
+#### perf
 
-**Google Performance Tools:** Pendiente.
+En la ejecución normal, `perf report` identificó a `GridIndex::nearest()` como el hotspot principal, con **97.12 % Self**. Con `--export`, la misma función continúa concentrando la mayor parte del trabajo, con **86.08 % Self**.
 
-**Valgrind / Callgrind:** Pendiente.
+Estos resultados corresponden al evento `cpu_core/cycles/P`, que reunió aproximadamente 92 mil muestras en la ejecución normal y 104 mil con exportación.
+
+Este procesador es híbrido y el reporte separa los eventos de `cpu_core` y `cpu_atom`. En estas ejecuciones, la mayor parte de las muestras quedó en `cpu_core`. No se fijó el programa a un CPU específico. Algunas cadenas de llamadas mostraron direcciones sin resolver. Por eso se utilizó la columna `Self` para identificar el hotspot, sin interpretar el árbol completo como una reconstrucción confiable de las llamadas.
+
+#### Google Performance Tools
+
+En la ejecución normal se obtuvieron **2322 muestras**. `GridIndex::nearest()` representó:
+
+- **90.9 %** de las muestras directas (`flat`).
+- **97.8 %** de las muestras acumuladas (`cum`).
+
+También aparecen funciones relacionadas con las estructuras utilizadas por `GridIndex::nearest()`, entre ellas:
+
+- `std::vector::operator[]`
+- `GridIndex::key`
+- `GridIndex::cell_of`
+- `std::_Hashtable::find`
+
+Para utilizar esta herramienta se enlazó `libprofiler` y se compiló con `-fno-omit-frame-pointer` y `-no-pie`. La opción `-no-pie` permitió mostrar los nombres de las funciones, ya que en un intento anterior aparecían direcciones. Estas muestras provienen de una compilación distinta de la usada con `perf` y Callgrind.
+
+#### Valgrind / Callgrind
+
+Callgrind contabilizó **207,961,183,472 instrucciones (`Ir`)** totales en la ejecución normal.
+
+El trabajo atribuido a `GridIndex::nearest()` se distribuyó de la siguiente manera:
+
+| Origen | Ir | % |
+|---|---:|---:|
+| `point_cloud_collimation.cpp` | 168,662,797,252 | 81.10 % |
+| `stl_vector.h` | 20,804,515,668 | 10.00 % |
+| `hashtable.h` | 6,421,932,315 | 3.09 % |
+| `hashtable_policy.h` | 4,139,601,854 | 1.99 % |
+| `stl_algobase.h` | 3,680,330,298 | 1.77 % |
+| `stl_function.h` | 617,513,896 | 0.30 % |
+| `stl_iterator.h` | 214,381,544 | 0.10 % |
+| **Total de las filas de `nearest`** | **204,541,072,827** | **98.35 %** |
+
+Estos valores representan instrucciones ejecutadas, no tiempo.
+El desglose muestra que parte del trabajo de la función aparece atribuido a los encabezados de vectores y tablas hash.
 
 ### 5.2 ¿Coinciden los resultados de las tres herramientas?
 
-Pendiente.
+Sí. Las tres herramientas identifican `GridIndex::nearest()` como la función que concentra la mayor parte del trabajo. Esto señala la búsqueda del vecino más cercano como el primer lugar donde conviene revisar una posible optimización. Los porcentajes cambian porque las herramientas miden de forma distinta. `perf` muestrea ciclos de CPU, Google Performance Tools muestrea el uso del CPU y Callgrind cuenta instrucciones mediante instrumentación.
+
+Además, el código insertado por el compilador puede aparecer repartido entre distintas funciones o archivos. Por eso la coincidencia está en el hotspot identificado, aunque los porcentajes no sean iguales.
 
 ### 5.3 ¿Qué costo tiene exportar los archivos de reconstrucción?
 
-Pendiente.
+Con `perf stat` se obtuvieron los siguientes resultados:
+
+| Configuración | Tiempo elapsed | Instrucciones (`cpu_core`) |
+|---|---:|---:|
+| Normal | 22.9617 s | 208,483,812,663 |
+| `--export` | 25.3931 s | 241,538,927,969 |
+
+La ejecución con exportación tardó aproximadamente **2.4315 s más**, lo que corresponde a un incremento del **10.59 %**.
+
+Los eventos de caché se midieron en ejecuciones separadas mediante `perf stat -e cache-references,cache-misses`:
+
+| Contador (`cpu_core`) | Normal | `--export` |
+|---|---:|---:|
+| Referencias a caché | 1,793,882,697 | 1,625,925,466 |
+| Fallos de caché | 29,623,229 | 40,047,712 |
+
+Los contadores escalados de `cpu_core` y `cpu_atom` se mantuvieron separados; no se sumaron entre sí.
+
+En el perfil con exportación aparecen funciones relacionadas con la escritura y el formateo de datos, como `write_cloud_csv`, `std::ostream::_M_insert` y `std::num_put::_M_insert_float`. Ese trabajo adicional ayuda a explicar el aumento del tiempo y que el porcentaje relativo de `GridIndex::nearest()` disminuya con `--export`. Esto no significa que la búsqueda de vecinos se haya acelerado.
+
+Los resultados corresponden a ejecuciones individuales, por lo que la diferencia de tiempo no debe interpretarse como un costo fijo.
+Tampoco se puede atribuir toda la variación de los contadores de caché únicamente a la exportación.
 
 ### 5.4 ¿Qué herramienta dio la evidencia más clara para decidir dónde optimizar?
 
-Pendiente.
+`perf` dio la evidencia más directa para identificar el hotspot: `GridIndex::nearest()` concentró el **97.12 % Self** en la ejecución normal. Con ese resultado ya se tiene una función concreta donde
+empezar a revisar. Callgrind complementó el análisis al mostrar cómo se distribuyen las instrucciones entre el código de esa función y los encabezados de las estructuras que utiliza. Google Performance Tools confirmó el mismo resultado mediante muestreo del CPU. Las tres herramientas apuntan a la búsqueda de vecinos, aunque todavía hace falta revisar el código y el ensamblador
+para decidir qué cambio aplicar.
 
 ---
 
 ## 6. Comparación entre equipos
 
-Una vez obtenidos los resultados de todos los integrantes, en esta sección
-se compararán las mediciones considerando las diferencias de hardware.
+Una vez obtenidos los resultados de todos los integrantes, en esta sección se compararán las mediciones considerando las diferencias de hardware.
 
 | Métrica | Angie | Milagro | Brayan | Alejandro |
 |---|---:|---:|---:|---:|
-| Tiempo normal (s) | 43.63 | 33.52 | Pendiente | Pendiente |
-| Tiempo `--export` (s) | 48.99 | 36.60 | Pendiente | Pendiente |
-| Incremento de tiempo (%) | 12.3 | 9.17 | Pendiente | Pendiente |
-| Hotspot principal (`perf`) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | Pendiente |
-| Hotspot principal (gperftools) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | Pendiente |
-| Hotspot principal (Callgrind) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | Pendiente |
-
+| Tiempo normal (s) | 43.63 | 33.52 | Pendiente | 22.9617 |
+| Tiempo `--export` (s) | 48.99 | 36.60 | Pendiente | 25.3931 |
+| Incremento de tiempo (%) | 12.3 | 9.17 | Pendiente | 10.59 |
+| Hotspot principal (`perf`) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | `GridIndex::nearest()` |
+| Hotspot principal (gperftools) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | `GridIndex::nearest()` |
+| Hotspot principal (Callgrind) | `GridIndex::nearest()` | `GridIndex::nearest()` | Pendiente | `GridIndex::nearest()` |
 Esta comparación permitirá determinar qué características del comportamiento
 son consistentes entre diferentes equipos y cuáles dependen del hardware
 utilizado.

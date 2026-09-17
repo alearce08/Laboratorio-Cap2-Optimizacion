@@ -1,0 +1,94 @@
+Total: 2322 samples
+    2110  90.9%  90.9%     2272  97.8% GridIndex::nearest
+      92   4.0%  94.8%       92   4.0% std::vector::operator[] (inline)
+      24   1.0%  95.9%       24   1.0% std::max (inline)
+      17   0.7%  96.6%       17   0.7% GridIndex::key (inline)
+      15   0.6%  97.2%       15   0.6% std::_Hashtable::find (inline)
+       9   0.4%  97.6%        9   0.4% GridIndex::cell_of (inline)
+       8   0.3%  98.0%       13   0.6% std::__unguarded_partition (inline)
+       7   0.3%  98.3%        8   0.3% std::_Hashtable::_M_find_before_node (inline)
+       6   0.3%  98.5%        6   0.3% __gnu_cxx::__normal_iterator::__normal_iterator (inline)
+       6   0.3%  98.8%        6   0.3% __memcpy_avx_unaligned_erms
+       2   0.1%  98.9%     1539  66.3% compare_profiles [clone .constprop.0]
+       2   0.1%  99.0%       12   0.5% std::__detail::_Map_base::operator[]
+       2   0.1%  99.1%        2   0.1% std::swap (inline)
+       2   0.1%  99.1%        3   0.1% std::vector::emplace_back (inline)
+       1   0.0%  99.2%       18   0.8% GridIndex::GridIndex (inline)
+       1   0.0%  99.2%        1   0.0% __brk
+       1   0.0%  99.3%        1   0.0% __gnu_cxx::__normal_iterator::operator++ (inline)
+       1   0.0%  99.3%        1   0.0% __gnu_cxx::__normal_iterator::operator-- (inline)
+       1   0.0%  99.4%        1   0.0% __gnu_cxx::__ops::_Iter_less_iter::operator (inline)
+       1   0.0%  99.4%        1   0.0% __ieee754_exp_fma
+       1   0.0%  99.4%        1   0.0% __sincos_fma
+       1   0.0%  99.5%        1   0.0% _int_free
+       1   0.0%  99.5%        1   0.0% _int_malloc
+       1   0.0%  99.6%        4   0.2% apply_transform (inline)
+       1   0.0%  99.6%        1   0.0% compare_profiles [clone .constprop.0] (inline)
+       1   0.0%  99.7%        1   0.0% do_cos
+       1   0.0%  99.7%        1   0.0% estimate_rigid_transform (inline)
+       1   0.0%  99.7%        1   0.0% libc_feholdsetround_sse_ctx
+       1   0.0%  99.8%       64   2.8% main (inline)
+       1   0.0%  99.8%        1   0.0% std::_Hashtable::_M_insert_unique_node (inline)
+       1   0.0%  99.9%        1   0.0% std::__detail::_Hashtable_base::_M_equals (inline)
+       1   0.0%  99.9%        1   0.0% std::__new_allocator::construct (inline)
+       1   0.0% 100.0%        1   0.0% std::mersenne_twister_engine::operator
+       1   0.0% 100.0%       13   0.6% std::unordered_map::operator[] (inline)
+       0   0.0% 100.0%        1   0.0% GridIndex::~GridIndex (inline)
+       0   0.0% 100.0%        1   0.0% __GI___exp
+       0   0.0% 100.0%        2   0.1% __GI___libc_free
+       0   0.0% 100.0%        1   0.0% __GI___libc_malloc
+       0   0.0% 100.0%        1   0.0% __GI___sbrk
+       0   0.0% 100.0%        1   0.0% __glibc_morecore
+       0   0.0% 100.0%     2322 100.0% __libc_start_call_main
+       0   0.0% 100.0%     2322 100.0% __libc_start_main_impl
+       0   0.0% 100.0%     2322 100.0% _start
+       0   0.0% 100.0%        4   0.2% apply_transform
+       0   0.0% 100.0%     2279  98.1% collimate_icp (inline)
+       0   0.0% 100.0%     2322 100.0% main
+       0   0.0% 100.0%     1499  64.6% nearest_neighbor_distances [clone .constprop.0]
+       0   0.0% 100.0%        1   0.0% operator new@@GLIBCXX_3.4
+       0   0.0% 100.0%       13   0.6% percentile
+       0   0.0% 100.0%        8   0.3% std::_Hashtable::_M_find_node (inline)
+       0   0.0% 100.0%        1   0.0% std::_Hashtable::_Scoped_node::_Scoped_node (inline)
+       0   0.0% 100.0%        1   0.0% std::_Hashtable::clear (inline)
+       0   0.0% 100.0%        1   0.0% std::_Hashtable::~_Hashtable
+       0   0.0% 100.0%        2   0.1% std::_Vector_base::_M_deallocate (inline)
+       0   0.0% 100.0%        2   0.1% std::_Vector_base::~_Vector_base (inline)
+       0   0.0% 100.0%        6   0.3% std::__copy_move::__copy_m (inline)
+       0   0.0% 100.0%        6   0.3% std::__copy_move_a (inline)
+       0   0.0% 100.0%        6   0.3% std::__copy_move_a1 (inline)
+       0   0.0% 100.0%        6   0.3% std::__copy_move_a2 (inline)
+       0   0.0% 100.0%        1   0.0% std::__detail::_Hashtable_alloc::_M_allocate_node (inline)
+       0   0.0% 100.0%        1   0.0% std::__detail::_Hashtable_alloc::_M_deallocate_node (inline)
+       0   0.0% 100.0%        1   0.0% std::__detail::_Hashtable_alloc::_M_deallocate_nodes (inline)
+       0   0.0% 100.0%       13   0.6% std::__introselect (inline)
+       0   0.0% 100.0%        1   0.0% std::__new_allocator::allocate (inline)
+       0   0.0% 100.0%        2   0.1% std::__new_allocator::deallocate (inline)
+       0   0.0% 100.0%        1   0.0% std::__new_allocator::destroy (inline)
+       0   0.0% 100.0%       13   0.6% std::__unguarded_partition_pivot (inline)
+       0   0.0% 100.0%        6   0.3% std::__uninitialized_copy::__uninit_copy (inline)
+       0   0.0% 100.0%        6   0.3% std::__uninitialized_copy_a (inline)
+       0   0.0% 100.0%        1   0.0% std::__uninitialized_move_if_noexcept_a (inline)
+       0   0.0% 100.0%        1   0.0% std::allocator_traits::allocate (inline)
+       0   0.0% 100.0%        1   0.0% std::allocator_traits::construct (inline)
+       0   0.0% 100.0%        2   0.1% std::allocator_traits::deallocate (inline)
+       0   0.0% 100.0%        1   0.0% std::allocator_traits::destroy (inline)
+       0   0.0% 100.0%        6   0.3% std::copy (inline)
+       0   0.0% 100.0%        2   0.1% std::iter_swap (inline)
+       0   0.0% 100.0%       13   0.6% std::nth_element (inline)
+       0   0.0% 100.0%        1   0.0% std::pair::~pair (inline)
+       0   0.0% 100.0%        1   0.0% std::shuffle
+       0   0.0% 100.0%        1   0.0% std::uniform_int_distribution::_S_nd (inline)
+       0   0.0% 100.0%        1   0.0% std::uniform_int_distribution::operator
+       0   0.0% 100.0%        6   0.3% std::uninitialized_copy (inline)
+       0   0.0% 100.0%       15   0.6% std::unordered_map::find (inline)
+       0   0.0% 100.0%        1   0.0% std::unordered_map::~unordered_map (inline)
+       0   0.0% 100.0%        1   0.0% std::vector::_M_move_assign (inline)
+       0   0.0% 100.0%        2   0.1% std::vector::_M_range_insert (inline)
+       0   0.0% 100.0%        6   0.3% std::vector::end (inline)
+       0   0.0% 100.0%        2   0.1% std::vector::insert (inline)
+       0   0.0% 100.0%        1   0.0% std::vector::operator= (inline)
+       0   0.0% 100.0%        3   0.1% std::vector::push_back (inline)
+       0   0.0% 100.0%        4   0.2% std::vector::vector (inline)
+       0   0.0% 100.0%        2   0.1% std::vector::~vector (inline)
+       0   0.0% 100.0%        1   0.0% systrim
