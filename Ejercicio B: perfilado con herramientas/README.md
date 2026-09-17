@@ -22,13 +22,13 @@ pueden variar entre integrantes.
 
 | Especificación | Angie | Milagro | Brayan | Alejandro |
 |---|---|---|---|---|
-| Procesador | Intel Core i5-10210U | Pendiente | AMD Ryzen 7 5700U with Radeon Graphics | Pendiente |
-| Núcleos / hilos | 4 / 8 | Pendiente | 8 / 16 | Pendiente |
-| Memoria RAM | 16 GB | Pendiente | 16 GB | Pendiente |
-| Sistema operativo | Ubuntu 22.04.5 LTS | Pendiente | Ubuntu 24.04.5 LTS| Pendiente |
-| Arquitectura | x86-64 | Pendiente | Px86-64 | Pendiente |
-| Kernel | 6.8.0-138-generic | Pendiente | 	7.0.0-31-generic | Pendiente |
-| Compilador | GCC/G++ 11.4 | Pendiente | GCC/G++ 13.3.0 | Pendiente |
+| Procesador | Intel Core i5-10210U | Intel Core i7-12700H | AMD Ryzen 7 5700U with Radeon Graphics | Pendiente |
+| Núcleos / hilos | 4 / 8 | 14 / 20 | 8 / 16 | Pendiente |
+| Memoria RAM | 16 GB | 16 GB | 16 GB | Pendiente |
+| Sistema operativo | Ubuntu 22.04.5 LTS | Ubuntu 26.04 LTS | Ubuntu 24.04.5 LTS| Pendiente |
+| Arquitectura | x86-64 | x86-64 | Px86-64 | Pendiente |
+| Kernel | 6.8.0-138-generic | 7.0.0-31-generic | 	7.0.0-31-generic | Pendiente |
+| Compilador | GCC/G++ 11.4 | GCC/G++ 15.2.0 | GCC/G++ 13.3.0 | Pendiente |
 
 Los resultados obtenidos deben interpretarse considerando las diferencias
 entre los equipos utilizados por cada integrante.
