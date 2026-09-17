@@ -171,25 +171,107 @@ gperftools aportaron evidencia adicional para confirmar el resultado.
 
 Los archivos obtenidos se encuentran en la carpeta [`Milagro/`](./Milagro/).
 
+Nota: en este equipo, `perf record`, Valgrind/Callgrind y Google Performance
+Tools se ejecutaron únicamente en la configuración normal (sin `--export`).
+Solo `perf stat` se corrió en ambas configuraciones.
+
 ### 3.1 Hotspots identificados
 
-**perf:** Pendiente.
+#### perf
 
-**Google Performance Tools:** Pendiente.
+En la ejecución normal, `perf report` identificó a `GridIndex::nearest()`
+como el hotspot dominante, con **97.14 % Self** y **97.67 % Children**.
+Dentro de la propia función, buena parte del tiempo se concentra en la
+búsqueda dentro del `unordered_map` que indexa las celdas del grid
+(`std::_Hashtable::find`/`_M_locate`).
 
-**Valgrind / Callgrind:** Pendiente.
+Nota sobre limitaciones del equipo: este procesador es híbrido (núcleos
+de rendimiento `cpu_core` y de eficiencia `cpu_atom`). El proceso corrió
+completo en un núcleo `cpu_atom`, por lo que los contadores de `cpu_core`
+aparecieron como `<not counted>`. Tampoco fue posible obtener
+cache-references/cache-misses con `perf stat` por defecto en este equipo.
+
+#### Google Performance Tools
+
+Se obtuvieron 3489 muestras (`interrupts/evictions/bytes =
+3489/890/72232`). `GridIndex::nearest()` representó:
+
+- 71.91 % de las muestras directas (`flat`).
+- 97.94 % de las muestras acumuladas (`cum`).
+
+El resto del tiempo se reparte en funciones asociadas a la tabla hash
+usada internamente por `GridIndex::nearest()`: `std::_Hashtable::
+_M_find_before_node` (20.29 % cum), `std::__detail::_Mod_range_hashing::
+operator()` (3.98 %) y `std::equal_to::operator()` (3.87 %).
+
+#### Valgrind / Callgrind
+
+Callgrind contabilizó 205,733,272,629 instrucciones (`Ir`) totales en la
+ejecución normal.
+
+| Origen | Ir | % |
+|---|---:|---:|
+| `GridIndex::nearest` (cuerpo propio) | 166,674,287,838 | 81.01 % |
+| `stl_vector.h` | 20,804,515,668 | 10.11 % |
+| `hashtable.h` | 7,290,929,053 | 3.54 % |
+| `stl_algobase.h` | 3,680,330,298 | 1.79 % |
+| `hashtable_policy.h` | 3,484,986,660 | 1.69 % |
+| `stl_function.h` | 617,513,896 | 0.30 % |
+| `stl_iterator.h` | 214,381,544 | 0.10 % |
+| **Total atribuible a `nearest`** | **~202,767 M** | **~98.56 %** |
 
 ### 3.2 ¿Coinciden los resultados de las tres herramientas?
 
-Pendiente.
+Sí. Las tres herramientas señalan a `GridIndex::nearest()` como la región
+dominante de la ejecución, con porcentajes acumulados muy similares entre
+sí (97.67 % en `perf`, 97.94 % en gperftools, 98.56 % en Callgrind).
+
+Las pequeñas diferencias se explican por cómo mide cada herramienta:
+`perf` usa muestreo estadístico basado en ciclos de CPU; gperftools usa
+muestreo por interrupciones de temporizador (menos muestras: solo 3489);
+y Callgrind usa instrumentación exhaustiva contando instrucciones
+ejecutadas (`Ir`), sin muestreo, por lo que su resultado es determinista
+pero corre bajo una carga artificial mucho más lenta. Aun así, las tres
+apuntan a la misma función y, dentro de ella, al mismo mecanismo interno:
+la búsqueda en el `unordered_map` de celdas del grid.
 
 ### 3.3 ¿Qué costo tiene exportar los archivos de reconstrucción?
 
-Pendiente.
+Con `perf stat` se obtuvieron los siguientes tiempos:
+
+| Configuración | Tiempo elapsed | Instrucciones (`cpu_atom`) |
+|---|---:|---:|
+| Normal | 33.52 s | 206,149,647,332 |
+| `--export` | 36.60 s | 238,279,633,152 |
+
+La configuración con exportación tardó aproximadamente 3.08 s más
+(+9.17 %) y ejecutó cerca de 32,130 millones de instrucciones adicionales
+(+15.58 %). Esa diferencia corresponde al trabajo de escribir los CSV y
+los 46 archivos `.ppm` de reconstrucción.
+
+Estos valores corresponden a ejecuciones independientes de un proceso de
+~33-37 segundos, por lo que no deben interpretarse como una medición
+perfectamente determinista, aunque la magnitud del incremento es
+consistente con el trabajo adicional de E/S que realiza `--export`.
 
 ### 3.4 ¿Qué herramienta dio la evidencia más clara para decidir dónde optimizar?
 
-Pendiente.
+`perf` fue la herramienta más rápida y directa para identificar el
+hotspot: sin recompilar nada, `perf report` mostró de inmediato que
+`GridIndex::nearest()` concentraba el 97 % del tiempo.
+
+Callgrind aportó el nivel de detalle más profundo, desglosando el tiempo
+dentro de `nearest()` por archivo de cabecera (`stl_vector.h`,
+`hashtable.h`, etc.), lo que permite ver exactamente qué operación
+interna (la búsqueda en el `unordered_map`) es la más costosa —
+información que `perf` no mostró con el mismo nivel de granularidad.
+
+gperftools, con solo 3489 muestras, confirmó el mismo resultado con una
+tercera técnica independiente, aunque con menor resolución que las otras
+dos por tener muchas menos muestras.
+
+En conjunto: `perf` para localizar rápido dónde mirar, y Callgrind para
+entender con precisión qué parte de esa función es costosa y por qué.
 
 ---
 
