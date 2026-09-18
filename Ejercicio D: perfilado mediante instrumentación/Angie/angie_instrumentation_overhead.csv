@@ -1,0 +1,6 @@
+]633;E;echo "version,samples,average_seconds";e03df8a1-14fd-4436-8ca1-e192eecdc3b4]633;Cversion,samples,average_seconds
+original,5,44.842
+instrumented,5,44.446
+
+difference_seconds,-0.396
+relative_difference_percent,-0.8831

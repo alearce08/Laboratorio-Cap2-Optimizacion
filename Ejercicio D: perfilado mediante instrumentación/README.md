@@ -159,7 +159,58 @@ Los temporizadores no indican qué instrucciones concentran el trabajo, cuántos
 
 ## 5. Resultados de Angie
 
-Pendiente de agregar sus archivos, tiempos promedio, overhead y comparación con las herramientas del ejercicio B.
+Las mediciones completas se encuentran en la carpeta [Angie/](Angie/). El resumen de los tiempos se encuentra en [angie_instrumentation_summary.csv](Angie/angie_instrumentation_summary.csv).
+
+Se realizaron cinco repeticiones para obtener los promedios de cada región.
+
+### 5.1 Tiempos por región
+
+| Región | Muestras | Promedio |
+|---|---:|---:|
+| `target_generation` | 5 | 16.025 ms |
+| `source_preparation` | 5 | 31.660 ms |
+| `grid_construction` | 5 | 3.906 ms |
+| `nearest_neighbors` | 225 | 315.466 ms |
+| `rigid_transform` | 225 | 0.600 ms |
+| `profile_metrics` | 225 | 635.408 ms |
+| `file_export` | 5 | 5863.887 ms |
+| `gstreamer` | 5 | 9455.041 ms |
+
+Las regiones `nearest_neighbors`, `rigid_transform` y `profile_metrics` se midieron en cada una de las 45 iteraciones del algoritmo. Por esta razón se obtuvieron 225 muestras para cada región al realizar cinco ejecuciones.
+
+Entre las regiones del algoritmo iterativo, `profile_metrics` presentó el mayor tiempo promedio, con 635.408 ms por iteración, seguido de `nearest_neighbors`, con 315.466 ms.
+
+Los tiempos de `file_export` y `gstreamer` corresponden a fases completas de ejecución y no deben compararse directamente con los tiempos por iteración. Además, la medición de GStreamer incluye las esperas utilizadas por el visor.
+
+### 5.2 Comparación con las herramientas externas
+
+La región con mayor tiempo dentro del procesamiento iterativo fue `profile_metrics`, seguida de `nearest_neighbors`. Esto es consistente con los resultados obtenidos mediante las herramientas del ejercicio B.
+
+En `perf`, `GridIndex::nearest` concentró aproximadamente 97.76 % del costo propio y 98.15 % considerando sus hijos. Google Performance Tools también identificó esta función como la principal región de trabajo, con 62.2 % de las muestras directas y 97.9 % de costo acumulado. En Callgrind, `GridIndex::nearest` representó aproximadamente 83.45 % de las instrucciones ejecutadas.
+
+Aunque la instrumentación manual identifica `profile_metrics` como la región de mayor duración, esta función realiza internamente búsquedas de vecinos mediante `GridIndex::nearest`. Entonces ambos métodos muestran que la búsqueda de vecinos es la principal fuente de costo computacional.
+
+### 5.3 Overhead de la instrumentación
+
+| Versión | Tiempo promedio |
+|---|---:|
+| Original | 44.842 s |
+| Instrumentada | 44.446 s |
+
+La diferencia observada fue de -0.396 segundos, equivalente aproximadamente a -0.88 %. Esto no significa que la instrumentación acelere el programa, sino que la diferencia obtenida se encuentra dentro de la variabilidad observada entre las ejecuciones.
+Con estas mediciones no se detectó un overhead apreciable causado por la instrumentación.
+
+### 5.4 ¿Qué resulta más fácil de entender con instrumentación manual?
+
+La instrumentación manual permite conocer directamente cuánto tarda cada etapa del algoritmo y observar su comportamiento en cada iteración. Permitió distinguir el tiempo utilizado por `nearest_neighbors`, `rigid_transform` y `profile_metrics`, además de medir de forma independiente las fases de exportación y visualización.
+
+También facilita relacionar el tiempo medido con una etapa concreta del algoritmo sin depender únicamente del árbol de llamadas generado por las herramientas de perfilado.
+
+### 5.5 ¿Qué información no entrega la instrumentación manual?
+
+La instrumentación manual no permite determinar qué instrucciones específicas concentran el costo ni proporciona contadores de hardware como ciclos, IPC, fallos de caché o fallos de predicción de saltos.
+
+Tampoco muestra automáticamente cómo se distribuye el costo dentro de una función o entre funciones internas que no fueron instrumentadas. Para obtener este nivel de detalle siguen siendo necesarias herramientas como `perf`, Google Performance Tools, Callgrind y `perf annotate`.
 
 ## 6. Resultados de Milagro
 
@@ -174,6 +225,6 @@ Pendiente de agregar sus archivos, tiempos promedio, overhead y comparación con
 | Integrante | Región con mayor tiempo | Tiempo promedio por llamada | Overhead observado | Coincide con B |
 |---|---|---:|---:|---|
 | Alejandro | `profile_metrics` | 329.849 ms | No apreciable (-1.39 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
-| Angie | Pendiente | Pendiente | Pendiente | Pendiente |
+| Angie | `profile_metrics` | 635.408 ms | No apreciable (-0.88 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
 | Milagro | Pendiente | Pendiente | Pendiente | Pendiente |
 | Brayan | Pendiente | Pendiente | Pendiente | Pendiente |

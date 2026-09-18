@@ -1,0 +1,9 @@
+region,samples,average_ms
+grid_construction,5,3.905600
+source_preparation,5,31.660320
+gstreamer,5,9455.041022
+file_export,5,5863.886984
+target_generation,5,16.025440
+rigid_transform,225,0.600119
+nearest_neighbors,225,315.465577
+profile_metrics,225,635.407841
