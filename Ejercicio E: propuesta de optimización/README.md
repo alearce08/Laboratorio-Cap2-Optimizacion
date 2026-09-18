@@ -18,33 +18,44 @@ hardware y software entre los equipos. Para evaluar la optimización se compara
 principalmente cada versión modificada contra su versión original en el mismo
 equipo.
 
----
-
 ## Optimización: tamaño de celda de `GridIndex`
 
 ### Cambio realizado
 
-Se modificó el programa para definir el tamaño de celda de `GridIndex` mediante
-una constante:
+Se modificó el tamaño de celda utilizado por `GridIndex`. El programa original
+utiliza:
 
 ```cpp
 constexpr double GRID_CELL_SIZE = 90.0;
 ```
 
-Esto permite evaluar diferentes tamaños de celda manteniendo sin cambios el
-resto del algoritmo.
+Se probaron de forma exploratoria los valores `45.0`, `60.0`, `120.0` y
+`180.0`. Para la comparación final se seleccionó `60.0`, por ser el valor
+alternativo que presentó el menor tiempo entre los tamaños modificados
+evaluados.
+
+---
 
 ### Hipótesis
 
-El tamaño de celda afecta la búsqueda de vecinos más cercanos. Una celda
-pequeña contiene menos puntos, pero puede requerir consultar más celdas. Una
-celda grande reduce la cantidad de celdas consultadas, pero puede aumentar la
-cantidad de candidatos evaluados.
+El tamaño de celda afecta el costo de la búsqueda de vecinos más cercanos.
 
-Se evaluó si modificar el valor original de `90.0` podía reducir el tiempo de
-búsqueda.
+Una celda pequeña contiene menos puntos candidatos, pero puede requerir
+consultar más celdas. Una celda grande puede reducir la cantidad de celdas
+consultadas, pero aumenta la cantidad de candidatos por celda.
 
-### Metodología
+La hipótesis fue que modificar el tamaño original de `90.0` podía reducir el
+tiempo de búsqueda.
+
+---
+
+## Metodología
+
+Se comparó el programa original (`90.0`) contra la versión modificada (`60.0`)
+utilizando dos técnicas:
+
+1. Instrumentación manual con `std::chrono`.
+2. `perf stat`.
 
 El programa se compiló con:
 
@@ -53,7 +64,7 @@ make clean
 make CXXFLAGS="-std=c++17 -O2 -g -Wall -Wextra -pedantic -fno-omit-frame-pointer"
 ```
 
-Para el valor original (`90.0`) se realizaron cinco ejecuciones:
+Para la instrumentación manual se realizaron cinco ejecuciones por versión:
 
 ```bash
 for i in {1..5}; do
@@ -62,60 +73,67 @@ for i in {1..5}; do
 done
 ```
 
-También se realizaron pruebas exploratorias con tamaños de celda de `45.0`,
-`60.0`, `120.0` y `180.0`.
+Para `perf` se utilizó:
 
-Se analizaron principalmente las regiones instrumentadas
-`nearest_neighbors` y `profile_metrics`. Además, se verificaron las iteraciones
-y el `profile_score` final.
+```bash
+sudo perf stat ./point_cloud_collimation 2>&1 | tee <nombre>_E_perf_grid90.txt
+```
+
+Los comandos se repiten cambiando `grid90` por `grid60` para la versión
+modificada.
 
 ---
 
 ## Resultados de Angie
 
-| Tamaño de celda | `nearest_neighbors` (ms) | `profile_metrics` (ms) | Iteraciones | `profile_score` |
-|---:|---:|---:|---:|---:|
-| 45.0 | 409.933 | 837.756 | 45 | 0.01847086 |
-| 60.0 | 400.667 | 741.867 | — | — |
-| **90.0 (original)** | **340.733** | **681.182** | **45** | **0.01847086** |
-| 120.0 | 412.867 | 835.200 | 45 | 0.01847086 |
-| 180.0 | 584.222 | 1214.578 | 45 | 0.01847086 |
+### Instrumentación manual
 
-El valor de `90.0` corresponde al promedio de cinco ejecuciones. Los demás
-valores corresponden a pruebas exploratorias individuales.
+Los valores corresponden al promedio de cinco ejecuciones.
 
-### Conclusión
+| Región | 90.0 original (ms) | 60.0 modificado (ms) | Variación |
+|---|---:|---:|---:|
+| `nearest_neighbors` | 340.733 | 390.102 | +14.49 % |
+| `profile_metrics` | 681.182 | 716.476 | +5.18 % |
+| `grid_construction` | 3.800 | 4.400 | +15.79 % |
 
-Los tamaños evaluados no mejoraron el rendimiento respecto al valor original
-de `90.0`.
+Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y
+`profile_score = 0.01847086`.
 
-Los resultados son consistentes con un compromiso entre consultar más celdas
-cuando estas son pequeñas y evaluar más candidatos cuando son grandes. Para
-los valores probados, `90.0` presentó el menor tiempo.
+### `perf stat`
 
-Por lo tanto, la hipótesis de mejorar el rendimiento modificando el tamaño de
-celda **no se confirmó para los valores evaluados**.
+| Métrica | 90.0 original | 60.0 modificado | Variación |
+|---|---:|---:|---:|
+| Tiempo total | 44.455 s | 56.451 s | +26.99 % |
+| Ciclos | 167,689,016,613 | 202,549,739,371 | +20.79 % |
+| Instrucciones | 203,917,947,016 | 177,269,800,206 | -13.07 % |
+| IPC | 1.22 | 0.88 | -27.87 % |
+| Branch misses | 693,761,054 | 1,111,822,866 | +60.26 % |
+| Branch-miss rate | 2.60 % | 4.34 % | +1.74 pp |
+
+Aunque la versión con `60.0` ejecutó menos instrucciones, necesitó más ciclos,
+presentó menor IPC y una mayor proporción de fallos de predicción de saltos.
+
+---
+
+## Conclusión
+
+La hipótesis no se confirmó. Reducir `GRID_CELL_SIZE` de `90.0` a `60.0`
+mantuvo el resultado de la colimación, pero aumentó el tiempo de ejecución.
+
+La instrumentación manual mostró un aumento de 14.49 % en
+`nearest_neighbors`, mientras que `perf` mostró un aumento de 26.99 % en el
+tiempo total.
+
+Para este caso, el tamaño original de `90.0` presentó mejor rendimiento que
+los tamaños alternativos evaluados.
 
 ---
 
 ## Comparación grupal
 
-| Integrante | Tamaño original | Tamaños evaluados | Mejor valor observado | `nearest_neighbors` original (ms) | `nearest_neighbors` mejor (ms) | Resultado preservado |
-|---|---:|---|---:|---:|---:|---|
-| Angie | 90.0 | 45, 60, 120, 180 | 90.0 | 340.733 | 340.733 | Sí* |
-| Milagro | 90.0 | — | — | — | — | — |
-| Brayan | 90.0 | — | — | — | — | — |
-| Alejandro | 90.0 | — | — | — | — | — |
-
-\* Verificado en los tamaños para los cuales se registraron explícitamente las
-iteraciones y el `profile_score`.
-
----
-
-## Evidencia con herramientas
-
-La instrumentación manual con `std::chrono` se utilizó para medir directamente
-las regiones afectadas por la optimización.
-
-La comparación con `perf` se agregará para contrastar el programa original y
-la versión modificada utilizando una segunda técnica de perfilado.
+| Integrante | Original | Modificado | `nearest_neighbors` original (ms) | `nearest_neighbors` modificado (ms) | Tiempo `perf` original (s) | Tiempo `perf` modificado (s) | Hipótesis confirmada |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Angie | 90.0 | 60.0 | 340.733 | 390.102 | 44.455 | 56.451 | No |
+| Milagro | 90.0 | — | — | — | — | — | — |
+| Brayan | 90.0 | — | — | — | — | — | — |
+| Alejandro | 90.0 | — | — | — | — | — | — |
