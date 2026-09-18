@@ -478,7 +478,7 @@ Agregar referencias a las regiones revisadas mediante líneas, símbolos o fragm
 |---|---|---|---:|---|---|
 | Alejandro | `GridIndex::nearest` | `comisd %xmm0,%xmm1` | 11,88 % | Sí | Agrupar las coordenadas de los puntos por celda. |
 | Angie | `GridIndex::nearest`  | `subsd (%rax),%xmm0` | 16,00 % | Sí | Modificar la estructura utilizada para la búsqueda de vecinos |
-| Milagro | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| Milagro | `GridIndex::nearest` | `subsd (%rax),%xmm0` | 16,67 % | Sí | Guardar coordenadas de los puntos por celda en vez de solo índices. |
 | Brayan | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 
 Los porcentajes locales sirven para identificar dónde se concentran las muestras dentro de cada función. Por sí solos no permiten decidir qué equipo ejecutó el programa más rápido.
