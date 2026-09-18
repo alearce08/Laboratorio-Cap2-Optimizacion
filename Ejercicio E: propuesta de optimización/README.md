@@ -117,9 +117,7 @@ presentó menor IPC y una mayor proporción de fallos de predicción de saltos.
 
 ## Resultados de Milagro
 
-### Instrumentación manual
-
-Los valores corresponden al promedio de cinco ejecuciones.
+Instrumentación manual: los valores corresponden al promedio de cinco ejecuciones.
 
 | Región | 90.0 original (ms) | 60.0 modificado (ms) | Variación |
 |---|---:|---:|---:|
@@ -127,10 +125,9 @@ Los valores corresponden al promedio de cinco ejecuciones.
 | `profile_metrics` | 507.303 | 526.270 | +3.74 % |
 | `grid_construction` | 3.145 | 3.918 | +24.58 % |
 
-Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y
-`profile_score = 0.01847086`.
+Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y profile_score = 0.01847086.
 
-### `perf stat`
+perf stat:
 
 | Métrica | 90.0 original | 60.0 modificado | Variación |
 |---|---:|---:|---:|
@@ -142,7 +139,6 @@ Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y
 | Branch-miss rate | 1.9 % | 3.3 % | +1.4 pp |
 
 En este procesador (con núcleos híbridos), perf solo registró contadores del tipo cpu_atom; los eventos cpu_core no se contabilizaron.
----
 
 ## Conclusión
 
