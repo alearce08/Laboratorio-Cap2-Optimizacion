@@ -141,26 +141,8 @@ Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y
 | Branch misses | 530,278,452 | 884,148,995 | +66.74 % |
 | Branch-miss rate | 1.9 % | 3.3 % | +1.4 pp |
 
-Al igual que en el equipo de Angie, la versión con `60.0` ejecutó menos
-instrucciones pero necesitó más ciclos, con menor IPC y una mayor proporción
-de fallos de predicción de saltos. En este procesador (con núcleos híbridos),
-`perf` solo registró contadores del tipo `cpu_atom`; los eventos `cpu_core`
-no se contabilizaron.
-
-### Conclusión
-
-La hipótesis no se confirmó. Reducir `GRID_CELL_SIZE` de `90.0` a `60.0`
-mantuvo el resultado de la colimación (mismo `profile_score` y mismas 45
-iteraciones), pero aumentó el tiempo de ejecución.
-
-La instrumentación manual mostró un aumento de 13.84 % en
-`nearest_neighbors`, mientras que `perf` mostró un aumento de 10.02 % en el
-tiempo total. Ambas técnicas coinciden en la dirección del efecto, aunque con
-magnitudes distintas, lo cual es consistente con que miden cosas diferentes
-(tiempo de una región específica contra tiempo total del programa).
-
-Para este caso, el tamaño original de `90.0` presentó mejor rendimiento que
-el tamaño alternativo evaluado, igual que en el equipo de Angie.
+En este procesador (con núcleos híbridos), `perf` solo registró contadores
+del tipo `cpu_atom`; los eventos `cpu_core` no se contabilizaron.
 ---
 
 ## Conclusión
