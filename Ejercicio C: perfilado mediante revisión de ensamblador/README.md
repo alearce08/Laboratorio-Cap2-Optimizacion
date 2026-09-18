@@ -407,7 +407,7 @@ Archivos:
 | `add_random_deformation` | Con `-O2` no aparece como símbolo independiente; su código quedó incorporado dentro de `main` | Acceso secuencial a los puntos y a las deformaciones locales | Saltos del bucle sobre puntos y sobre las deformaciones | Orientada a cómputo (llamadas matemáticas repetidas: seno, exponencial, raíz) |
 | `render_motion_frame` | No recibió muestras en esta ejecución (no se usó exportación ni visor); revisada de forma estática sobre el código fuente | Inicialización de buffer contigua; escritura de píxeles dependiente de coordenadas (no necesariamente consecutiva) | Condiciones para límites de píxeles y recorrido de puntos | No evaluable con datos de esta corrida; por el código, mixta (cálculo de coordenadas + escritura en memoria) |
 
-`GridIndex::nearest` fue la única de las cinco regiones con suficientes muestras propias para un desglose instrucción por instrucción confiable; por eso el detalle de la sección 4.3 se concentra en ella, igual que en los resultados de Angie y Alejandro.
+`GridIndex::nearest` fue la única de las cinco regiones con suficientes muestras propias para un desglose instrucción por instrucción confiable; por eso el detalle de la sección 4.3 se concentra en ella.
 
 ### 4.3. ¿Qué instrucciones concentran más muestras?
 
