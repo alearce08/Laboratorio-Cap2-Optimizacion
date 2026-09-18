@@ -442,35 +442,71 @@ El primer cambio sería reorganizar cómo se almacenan los puntos dentro de cada
 
 ## 5. Resultados de Brayan
 
-### 5.1. Equipo y evidencias
+### 5.1. Revisión de las cinco regiones
 
-**Pendiente:** indicar procesador, sistema operativo, compilador, versión de perf, evento analizado y enlaces a los archivos de la carpeta `Brayan`.
+| Función | Etiqueta de inicio (buscar con Ctrl+F) | Etiqueta/directiva de fin |
+|---|---|---|
+| `GridIndex::nearest` | `_ZNK9GridIndex7nearestERK5PointRS0_Rd:` (precedida por `.LFB6542:`) | `.LFE6542:` seguido de `.size _ZNK9GridIndex7nearestERK5PointRS0_Rd, ...` |
+| `compare_profiles` | `_ZL16compare_profilesRKSt6vectorI5PointSaIS0_EES4_dd.constprop.0:` | `.size _ZL16compare_profilesRKSt6vectorI5PointSaIS0_EES4_dd.constprop.0, ...` — bloque `.cold` aparte, buscar `_ZL16compare_profilesRKSt6vectorI5PointSaIS0_EES4_dd.constprop.0.cold:` |
+| `render_motion_frame` | `_ZL19render_motion_frameRKSt6vectorI5PointSaIS0_EES4_RKS_IS2_SaIS2_EEmii.constprop.0:` | `.size _ZL19render_motion_frameRKSt6vectorI5PointSaIS0_EES4_RKS_IS2_SaIS2_EEmii.constprop.0, ...` |
+| `add_random_deformation` | — (inlineada; no tiene bloque propio) | — |
+| `estimate_rigid_transform` | — (inlineada; solo aparece como `.LASF6714:` seguido del string `"estimate_rigid_transform"`, sin código) | — |
 
-### 5.2. Revisión de las cinco regiones
+### 5.2. Instrucciones costosas
 
-Completar según el ensamblador generado en este equipo:
+| Instrucción/llamada | Función en el `.cpp` | Línea en `point_cloud_collimation.cpp` |
+|---|---|---|
+| `std::cos`, `std::sin` | `apply_transform(const Point&, const Transform2D&)` | 96, 97 |
+| `std::cos`, `std::sin` | `transform_about_canvas_center` | 103, 104 |
+| `std::cos`, `std::sin` | `inverse_transform` | 110, 111 |
+| `std::hypot` | `add_random_deformation` | 147 |
+| `std::sin` | `add_random_deformation` (cálculo de `wave_x`) | 158 |
+| `std::sin` | `add_random_deformation` (cálculo de `wave_y`) | 161 |
+| `std::exp` | `add_random_deformation` (influencia de cada `DeformationBump`) | 170 |
+| `std::sqrt` | `add_random_deformation` (retorno del RMS de desplazamiento) | 180 |
+| `std::cos`, `std::sin` | `compose` | 185, 186 |
+| `std::floor` | `GridIndex::cell_of` (privado) | 280, 281 |
+| `std::atan2` | `estimate_rigid_transform` | 325 |
+| `std::cos`, `std::sin` | `estimate_rigid_transform` | 326, 327 |
+| `std::atan2` | `principal_axis_angle` | 357 |
+| `std::sqrt` | `nearest_neighbor_distances` (dentro del bucle, por punto) | 390 |
+| `std::sqrt` | `rmse_from_distances` | 420 |
+| `std::hypot` | `compare_profiles` (distancia entre centroides) | 443 |
+| `std::hypot` | `profile_score` (diagonal del canvas) | 465 |
+| `std::cos`, `std::sin` | `initial_pca_alignment` | 501, 502 |
+| `std::hypot` | `collimate_icp` (diagonal del canvas, `canvas_diag`) | 522 |
+| `std::sqrt` | `collimate_icp` (cálculo de `match_rmse` por iteración) | 577 |
+| `std::hypot` | `collimate_icp` (cálculo de `transform_step` por iteración) | 585 |
 
-| Región | Instrucciones o llamadas costosas | Acceso contiguo o indirecto | Saltos condicionales | Posible limitación por cómputo o memoria |
-|---|---|---|---|---|
-| `GridIndex::nearest` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `compare_profiles` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `estimate_rigid_transform` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `add_random_deformation` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `render_motion_frame` | Pendiente | Pendiente | Pendiente | Pendiente |
-
-Agregar referencias a las regiones revisadas mediante líneas, símbolos o fragmentos del ensamblador.
+Se identificó que el diseño general de la grilla espacial es híbrida en cuanto a los accesos. La localización de la celda es
+indirecta pero el recorrido de puntos dentro de la misma y el dibujo de frames no, más bien estos últimos con contiguos.
+Además, la función 'GridIndex::nearest' tiene hasta 22 saltos condicionales mientras que 'compare_profiles' cuenta con 54;
+claramente una función que compara debe hacerlo con saltos y condiciones para cumplir los criterios de la misma función.
 
 ### 5.3. ¿Qué instrucciones concentran más muestras?
 
-**Pendiente:** incluir función, evento, instrucciones, porcentajes y explicación. Indicar si los porcentajes son locales o globales.
+| Función | Muestras | % del total |
+|---|---|---|
+| `GridIndex::nearest(Point const&, Point&, double&) const` | 172,152 | 97.89% |
+| `compare_profiles(...)` | 960 | 0.55% |
+| `std::_Map_base<...>::operator[](long&&)` | 618 | 0.35% |
+| `main` | 464 | 0.26% |
+| `percentile(std::vector<double>, double)` | 408 | 0.23% |
+| `__memcpy_avx_unaligned_erms` | 270 | 0.15% |
+| `nearest_neighbor_distances(...)` | 228 | 0.13% |
+| `__sincos_fma` | 168 | 0.10% |
+| `apply_transform(std::vector<Point> const&, Transform2D const&)` | 110 | 0.06% |
 
 ### 5.4. ¿Coinciden con el hotspot del ejercicio B?
 
-**Pendiente:** comparar con los resultados de Brayan del ejercicio B.
+Sí, coincide completamente con los resultados. Para las 3 herramientas se identificó que GridIndex respresenta al menos
+un 80% o hasta más de un 96% del código. Con el perfilado desde ensamblador, vemos casi un 98% lo cual confirma que las herramientas
+distintas usadas son congruentes con lo esperado.
 
 ### 5.5. ¿Qué cambio intentaríamos primero?
 
-**Pendiente:** proponer un cambio y justificarlo con las mediciones y el ensamblador.
+Lo primero que se me ocurre es mejorar la localidad en memoria, reordenando el almacenado de puntos dentro de las celdas y logrando
+que el recorrido sea contiguo en memoria.
 
 ## 6. Comparación de resultados
 
@@ -479,7 +515,7 @@ Agregar referencias a las regiones revisadas mediante líneas, símbolos o fragm
 | Alejandro | `GridIndex::nearest` | `comisd %xmm0,%xmm1` | 11,88 % | Sí | Agrupar las coordenadas de los puntos por celda. |
 | Angie | `GridIndex::nearest`  | `subsd (%rax),%xmm0` | 16,00 % | Sí | Modificar la estructura utilizada para la búsqueda de vecinos |
 | Milagro | `GridIndex::nearest` | `subsd (%rax),%xmm0` | 16,67 % | Sí | Guardar coordenadas de los puntos por celda en vez de solo índices. |
-| Brayan | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| Brayan | `GridIndex::nearest` | `mulsd %xmm0,%xmm0` | 14,39% | Sí | Reorganizar almacenado de puntos |
 
 Los porcentajes locales sirven para identificar dónde se concentran las muestras dentro de cada función. Por sí solos no permiten decidir qué equipo ejecutó el programa más rápido.
 
