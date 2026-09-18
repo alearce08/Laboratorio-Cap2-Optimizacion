@@ -115,6 +115,38 @@ presentó menor IPC y una mayor proporción de fallos de predicción de saltos.
 
 ---
 
+## Resultados de Milagro
+
+| Tamaño de celda | `nearest_neighbors` (ms) | `profile_metrics` (ms) | Iteraciones | `profile_score` |
+|---:|---:|---:|---:|---:|
+| 45.0 | 302.379 | 616.797 | 45 | 0.01847086 |
+| 60.0 | 284.824 | 527.213 | 45 | 0.01847086 |
+| **90.0 (original)** | **250.712** | **507.303** | **45** | **0.01847086** |
+| 120.0 | 298.300 | 611.272 | 45 | 0.01847086 |
+| 180.0 | 434.721 | 902.340 | 45 | 0.01847086 |
+
+El valor de `90.0` corresponde al promedio de cinco ejecuciones. Los demás
+valores corresponden a pruebas exploratorias individuales.
+
+### Conclusión
+
+Ningún tamaño evaluado mejoró el rendimiento respecto al valor original de
+`90.0`.
+
+Los resultados en este equipo son consistentes con los de Angie: valores más
+pequeños de celda (`45.0`, `60.0`) obligan a consultar más celdas por
+búsqueda, y valores más grandes (`120.0`, `180.0`) aumentan la cantidad de
+candidatos evaluados dentro de cada celda; ambos efectos incrementan el
+tiempo. El valor de `90.0` resultó ser el mejor punto intermedio también en
+este hardware.
+
+Por lo tanto, la hipótesis de mejorar el rendimiento modificando el tamaño de
+celda **no se confirmó para los valores evaluados**, replicando en un
+procesador distinto (Intel Core i7-12700H) la conclusión obtenida por Angie.
+
+
+---
+
 ## Conclusión
 
 La hipótesis no se confirmó. Reducir `GRID_CELL_SIZE` de `90.0` a `60.0`
