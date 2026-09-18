@@ -130,20 +130,15 @@ valores corresponden a pruebas exploratorias individuales.
 
 ### Conclusión
 
-Ningún tamaño evaluado mejoró el rendimiento respecto al valor original de
-`90.0`.
+Los tamaños evaluados no mejoraron el rendimiento respecto al valor original
+de `90.0`.
 
-Los resultados en este equipo son consistentes con los de Angie: valores más
-pequeños de celda (`45.0`, `60.0`) obligan a consultar más celdas por
-búsqueda, y valores más grandes (`120.0`, `180.0`) aumentan la cantidad de
-candidatos evaluados dentro de cada celda; ambos efectos incrementan el
-tiempo. El valor de `90.0` resultó ser el mejor punto intermedio también en
-este hardware.
+Los resultados son consistentes con un compromiso entre consultar más celdas
+cuando estas son pequeñas y evaluar más candidatos cuando son grandes. Para
+los valores probados, `90.0` presentó el menor tiempo.
 
 Por lo tanto, la hipótesis de mejorar el rendimiento modificando el tamaño de
-celda **no se confirmó para los valores evaluados**, replicando en un
-procesador distinto (Intel Core i7-12700H) la conclusión obtenida por Angie.
-
+celda **no se confirmó para los valores evaluados**.
 
 ---
 
