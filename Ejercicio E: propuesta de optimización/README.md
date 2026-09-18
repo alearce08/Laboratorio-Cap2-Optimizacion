@@ -154,6 +154,51 @@ los tamaños alternativos evaluados.
 
 ---
 
+
+## Resultados de Alejandro
+
+### Instrumentación manual
+
+Los valores corresponden al promedio de cinco ejecuciones.
+
+| Región | 90.0 original (ms) | 60.0 modificado (ms) | Variación |
+|---|---:|---:|---:|
+| `nearest_neighbors` | 163.615 | 192.321 | +17.54 % |
+| `profile_metrics` | 331.002 | 355.306 | +7.34 % |
+| `grid_construction` | 2.622 | 3.319 | +26.58 % |
+
+Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y
+`profile_score = 0.01847086`.
+
+### `perf stat`
+
+| Métrica | 90.0 original | 60.0 modificado | Variación |
+|---|---:|---:|---:|
+| Tiempo total | 22.886 s | 26.569 s | +16.10 % |
+| Ciclos | 86,407,640,159 | 100,249,532,212 | +16.02 % |
+| Instrucciones | 208,538,365,057 | 185,411,686,294 | -11.09 % |
+| IPC | 2.41 | 1.85 | -23.37 % |
+| Branch misses | 488,008,623 | 800,714,581 | +64.08 % |
+| Branch-miss rate | 1.76 % | 2.90 % | +1.14 pp |
+
+El procesador utilizado tiene núcleos híbridos. El proceso se ejecutó más del
+99.9 % del tiempo en `cpu_core`, por lo que el análisis utiliza los contadores
+de ese tipo de núcleo.
+
+La versión con celda `60.0` ejecutó menos instrucciones, pero necesitó más
+ciclos, presentó un IPC menor y aumentó los fallos de predicción de saltos.
+Esto explica el aumento observado en el tiempo total.
+
+### Conclusión 
+
+La hipótesis no se confirmó en este equipo. Reducir el tamaño de celda de `90.0` a `60.0` mantuvo las 45 iteraciones y el mismo `profile_score = 0.01847086`, pero aumentó el tiempo de ejecución.
+
+La instrumentación manual mostró un aumento de 17.54 % en `nearest_neighbors`, mientras que `perf stat` registró un aumento de 16.10 % en el tiempo total. Aunque la versión modificada ejecutó 11.09 % menos instrucciones, necesitó 16.02 % más ciclos, redujo el IPC en 23.37 % y aumentó los fallos de predicción de saltos en 64.08 %.
+
+Por lo tanto, en este equipo el tamaño original de `90.0` presentó mejor rendimiento que el tamaño modificado de `60.0`.
+
+
+
 ## Comparación grupal
 
 | Integrante | Original | Modificado | `nearest_neighbors` original (ms) | `nearest_neighbors` modificado (ms) | Tiempo `perf` original (s) | Tiempo `perf` modificado (s) | Hipótesis confirmada |
@@ -161,4 +206,4 @@ los tamaños alternativos evaluados.
 | Angie | 90.0 | 60.0 | 340.733 | 390.102 | 44.455 | 56.451 | No |
 | Milagro | 90.0 | 60.0 | 250.712 | 285.421 | 34.918 | 38.417 | No |
 | Brayan | 90.0 | — | — | — | — | — | — |
-| Alejandro | 90.0 | — | — | — | — | — | — |
+| Alejandro | 90.0 | 60.0 | 163.615 | 192.321 | 22.886 | 26.569 | No |
