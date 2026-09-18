@@ -388,33 +388,57 @@ evaluados, podría disminuir estos costos.
 
 ### 4.1. Equipo y evidencias
 
-**Pendiente:** indicar procesador, sistema operativo, compilador, versión de perf, evento analizado y enlaces a los archivos de la carpeta `Milagro`.
+Las especificaciones del equipo están en la tabla de la sección anterior (columna Milagro).
+
+La captura de `perf record -g` en este equipo generó un `perf.data` de 17.028 MB con 144 971 muestras totales. El evento registrado fue `cpu_atom/cycles/P`: la anotación de `perf annotate --stdio` reporta 140 993 muestras de ese evento para todo el programa (algunas se pierden por no poder resolverse a un símbolo). Este procesador es de arquitectura híbrida (núcleos de rendimiento y núcleos eficientes), y en esta ejecución las muestras capturadas correspondieron únicamente al tipo de núcleo `atom`; no se mezclan aquí con muestras `cpu_core`, ya que no se registraron en esta corrida.
+
+Archivos:
+
+- [Ensamblador](Milagro/point_cloud_collimation.s)
+- [Anotación de perf](Milagro/point_cloud_collimation.annotate.txt)
 
 ### 4.2. Revisión de las cinco regiones
 
-Completar según el ensamblador generado en este equipo:
-
 | Región | Instrucciones o llamadas costosas | Acceso contiguo o indirecto | Saltos condicionales | Posible limitación por cómputo o memoria |
 |---|---|---|---|---|
-| `GridIndex::nearest` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `compare_profiles` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `estimate_rigid_transform` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `add_random_deformation` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `render_motion_frame` | Pendiente | Pendiente | Pendiente | Pendiente |
+| `GridIndex::nearest` | `subsd`, `mulsd`, `addsd`, `comisd` (distancia al cuadrado); `divq` (módulo de la tabla hash) | Indirecto: se lee un índice del vector de la celda y luego se accede a las coordenadas del punto en otra posición de memoria | `jbe` (actualizar mínimo), `jne`/bucle de candidatos | Mixta: cómputo repetido de distancias junto con acceso irregular a memoria |
+| `compare_profiles` | Llamadas a `nearest_neighbor_distances` (que internamente usa `GridIndex::nearest`); operaciones asociadas a métricas (tipo `hypot`/raíz cuadrada) | Los vectores de puntos y distancias se recorren de forma secuencial; las búsquedas de vecinos que ejecuta son indirectas | Saltos para controlar los recorridos y el conteo de puntos dentro del umbral | Mixta: trabajo propio secuencial más el costo indirecto de las búsquedas que invoca |
+| `estimate_rigid_transform` | Con `-O2` no aparece como símbolo independiente en el ensamblador; su código quedó incorporado dentro de `collimate_icp` | Acceso secuencial a las correspondencias (coherente con el código fuente) | Saltos propios del bucle de acumulación | Orientada a cómputo (sumas/restas/multiplicaciones y funciones trigonométricas) |
+| `add_random_deformation` | Con `-O2` no aparece como símbolo independiente; su código quedó incorporado dentro de `main` | Acceso secuencial a los puntos y a las deformaciones locales | Saltos del bucle sobre puntos y sobre las deformaciones | Orientada a cómputo (llamadas matemáticas repetidas: seno, exponencial, raíz) |
+| `render_motion_frame` | No recibió muestras en esta ejecución (no se usó exportación ni visor); revisada de forma estática sobre el código fuente | Inicialización de buffer contigua; escritura de píxeles dependiente de coordenadas (no necesariamente consecutiva) | Condiciones para límites de píxeles y recorrido de puntos | No evaluable con datos de esta corrida; por el código, mixta (cálculo de coordenadas + escritura en memoria) |
 
-Agregar referencias a las regiones revisadas mediante líneas, símbolos o fragmentos del ensamblador.
+`GridIndex::nearest` fue la única de las cinco regiones con suficientes muestras propias para un desglose instrucción por instrucción confiable; por eso el detalle de la sección 4.3 se concentra en ella.
 
 ### 4.3. ¿Qué instrucciones concentran más muestras?
 
-**Pendiente:** incluir función, evento, instrucciones, porcentajes y explicación. Indicar si los porcentajes son locales o globales.
+Estas son las instrucciones con mayor porcentaje local dentro de `GridIndex::nearest` (evento `cpu_atom/cycles/P`, 140 993 muestras totales del programa):
+
+| Dirección | Instrucción | Porcentaje local | Operación |
+|---|---|---:|---|
+| `0xcbe6` | `subsd (%rax),%xmm0` | 16,67 % | Diferencia entre una coordenada de la consulta y del candidato |
+| `0xcc00` | `comisd %xmm0,%xmm1` | 7,48 % | Compara la distancia calculada con la mejor encontrada |
+| `0xcbf7` | `addsd %xmm1,%xmm0` | 6,43 % | Suma los dos términos de la distancia al cuadrado |
+| `0xcbd0` | `movslq (%rdx),%rax` | 4,88 % | Obtiene el índice del candidato dentro de la celda |
+| `0xcc04` | `jbe 0xcc19` | 4,07 % | Decide si se actualiza el vecino más cercano |
+| `0xcb70` | `movq (%rbx),%rax` | 4,05 % | Carga de puntero (acceso indirecto al bucket) |
+| `0xcb76` | `movq 0x8(%rax),%rdi` | 4,01 % | Carga de puntero con desplazamiento |
+| `0xcbef` | `mulsd %xmm0,%xmm0` | 3,97 % | Calcula el cuadrado de una diferencia |
+| `0xcb60` | `movq (%rax,%rdx,8),%rbx` | 3,26 % | Acceso indexado (arreglo de buckets de la tabla hash) |
+| `0xcb97` | `divq %r10` | 3,16 % | División entera usada en el módulo del hash |
+| `0xcb59` | `divq %r10` | 3,07 % | División entera usada en el módulo del hash |
+| `0xcbf3` | `mulsd %xmm1,%xmm1` | 3,00 % | Calcula el cuadrado de la segunda diferencia |
+| `0xcbea` | `subsd 0x8(%rax),%xmm1` | 2,72 % | Diferencia de la segunda coordenada |
+| `0xcc19` | `addq $0x4,%rdx` | 2,21 % | Avanza al siguiente elemento del vector de la celda |
+
+Ninguna instrucción concentra por sí sola la mayoría del tiempo. Sumando por tipo de operación: el cálculo de la distancia euclidiana al cuadrado (`subsd`+`addsd`+`mulsd`+`comisd`) representa cerca de un 34 % local, el acceso indirecto a memoria (`movq`/`movslq`/`addq`) cerca de un 18 %, y la división entera del hash (`divq`, dos apariciones) cerca de un 6,2 %. Los porcentajes son locales a la función (`percent: local period`), no representan el tiempo total del programa ni la latencia individual de cada instrucción.
 
 ### 4.4. ¿Coinciden con el hotspot del ejercicio B?
 
-**Pendiente:** comparar con los resultados de Milagro del ejercicio B.
+Sí. En el Ejercicio B, `GridIndex::nearest` fue la función dominante en las tres herramientas: 97,67 % acumulado en `perf`, 97,94 % en Google Performance Tools y 98,56 % en Callgrind. El desglose de `perf annotate` confirma esto a nivel de instrucción: el peso dentro de esa función se concentra en el cálculo de distancias y en el recorrido/acceso indirecto de los candidatos de cada celda, exactamente el mecanismo que ya se había señalado como responsable del costo en el Ejercicio B.
 
 ### 4.5. ¿Qué cambio intentaríamos primero?
 
-**Pendiente:** proponer un cambio y justificarlo con las mediciones y el ensamblador.
+El primer cambio sería reorganizar cómo se almacenan los puntos dentro de cada celda de la tabla hash. Actualmente cada celda guarda únicamente índices (`vector<int>`), y para evaluar un candidato hay que seguir ese índice hasta otra posición del vector de puntos: eso es justamente lo que producen las instrucciones `movq`/`movslq` con mayor porcentaje. Si cada celda guardara directamente las coordenadas de sus puntos (en vez de solo el índice), se eliminaría ese salto indirecto y el recorrido de candidatos sería más contiguo en memoria. Esto ataca la parte de acceso a memoria (~18 % local) sin tocar todavía el cálculo de distancia en sí ni el hash. Habría que medir después si esto realmente reduce el tiempo total y si no afecta el resultado de la alineación (mismo `profile_score` final).
 
 ## 5. Resultados de Brayan
 
@@ -454,7 +478,7 @@ Agregar referencias a las regiones revisadas mediante líneas, símbolos o fragm
 |---|---|---|---:|---|---|
 | Alejandro | `GridIndex::nearest` | `comisd %xmm0,%xmm1` | 11,88 % | Sí | Agrupar las coordenadas de los puntos por celda. |
 | Angie | `GridIndex::nearest`  | `subsd (%rax),%xmm0` | 16,00 % | Sí | Modificar la estructura utilizada para la búsqueda de vecinos |
-| Milagro | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| Milagro | `GridIndex::nearest` | `subsd (%rax),%xmm0` | 16,67 % | Sí | Guardar coordenadas de los puntos por celda en vez de solo índices. |
 | Brayan | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 
 Los porcentajes locales sirven para identificar dónde se concentran las muestras dentro de cada función. Por sí solos no permiten decidir qué equipo ejecutó el programa más rápido.

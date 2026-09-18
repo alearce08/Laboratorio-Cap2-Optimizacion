@@ -214,17 +214,66 @@ Tampoco muestra automáticamente cómo se distribuye el costo dentro de una func
 
 ## 6. Resultados de Milagro
 
-Pendiente de agregar sus archivos, tiempos promedio, overhead y comparación con las herramientas del ejercicio B.
+Las mediciones completas se encuentran en la carpeta [Milagro/](Milagro/). El resumen de los tiempos está en [milagro_d_promedios.csv](Milagro/milagro_d_promedios.csv).
+
+Se realizaron tres repeticiones tanto del ejecutable original como del instrumentado.
+
+### 6.1 Tiempos por región
+
+| Región | Llamadas por ejecución | Promedio por llamada | Tiempo acumulado estimado |
+|---|---:|---:|---:|
+| `generate_target` | 1 | 9.803 ms | 9.803 ms |
+| `prepare_source` | 1 | 27.655 ms | 27.655 ms |
+| `grid_index_icp` | 1 | 3.090 ms | 3.090 ms |
+| `nearest_neighbors` | 45 | 250.452 ms | 11270.333 ms |
+| `estimate_transform` | 45 | 0.332 ms | 14.952 ms |
+| `profile_metrics` | 46 | 509.280 ms | 23426.866 ms |
+
+`profile_metrics` tiene 46 mediciones porque se calcula una vez antes de iniciar ICP y otra vez en cada una de las 45 iteraciones. `nearest_neighbors` y `estimate_transform` se ejecutan una vez por iteración.
+
+Las regiones medidas acumulan aproximadamente 34.75 segundos, prácticamente el mismo valor que el tiempo total promedio medido para el ejecutable instrumentado (35.11 s), lo que indica que casi todo el tiempo de ejecución queda cubierto por las regiones instrumentadas. La mayor parte se concentra en `profile_metrics`, seguida de `nearest_neighbors`. Las demás regiones representan una fracción pequeña del tiempo total.
+
+### 6.2 Comparación con las herramientas externas
+
+La región con mayor tiempo manual fue `profile_metrics`, con aproximadamente 509.28 ms por llamada y 23.43 segundos acumulados, seguida de `nearest_neighbors`, con 250.45 ms por llamada y 11.27 segundos acumulados.
+
+`profile_metrics` corresponde al cálculo de `compare_profiles`, que construye índices espaciales y busca vecinos en ambas direcciones (por eso incluye internamente muchas llamadas a `GridIndex::nearest`, además de calcular centroides y percentiles). `nearest_neighbors` mide directamente la búsqueda de correspondencias que usa ICP en cada iteración, la cual también recae en `GridIndex::nearest`.
+
+En el ejercicio B, `GridIndex::nearest` concentró:
+
+- 97.67 % de costo acumulado en `perf`.
+- 97.94 % de costo acumulado en Google Performance Tools.
+- 98.56 % de las instrucciones en Callgrind.
+
+La instrumentación manual agrupa el tiempo por etapa del programa (`profile_metrics`, `nearest_neighbors`, etc.), mientras que las herramientas externas atribuyen el costo directamente a la función `GridIndex::nearest` que ambas etapas invocan. Ambos métodos coinciden en que la búsqueda de vecinos es la principal fuente de costo, sea medida como una sola función o repartida entre las dos etapas que la utilizan.
+
+### 6.3 Overhead de la instrumentación
+
+| Versión | Tiempo promedio |
+|---|---:|
+| Original | 34.753 s |
+| Instrumentada | 35.110 s |
+
+La diferencia observada fue de +0.357 segundos, equivalente a aproximadamente +1.03 %. Esta diferencia es pequeña y se encuentra dentro de la variación normal esperada entre ejecuciones; no representa un overhead apreciable introducido por los temporizadores de `std::chrono`.
+
+### 6.4 ¿Qué resulta más fácil de entender con instrumentación manual?
+
+La instrumentación permite separar directamente cuánto tiempo toma cada etapa del programa (generación del perfil, preparación de la nube fuente, construcción del índice, búsqueda de vecinos, estimación de la transformación y cálculo de métricas) sin tener que interpretar un árbol de llamadas. También permite ver cómo cambia el tiempo de cada región a través de las iteraciones, algo que no se obtiene directamente de una sola corrida de `perf report` o Callgrind.
+
+Fue útil para confirmar que `profile_metrics` toma alrededor del doble de tiempo que `nearest_neighbors` en cada iteración, lo cual es consistente con que `profile_metrics` recorre las correspondencias en ambas direcciones y calcula métricas adicionales (centroides, percentiles), mientras que `nearest_neighbors` solo hace la búsqueda en una dirección para ICP.
+
+### 6.5 ¿Qué información no entrega la instrumentación manual?
+
+Los temporizadores manuales no indican qué instrucciones concentran el trabajo dentro de una región, ni entregan contadores de hardware como ciclos, instrucciones por ciclo, fallos de caché o fallos de predicción de saltos. Tampoco muestran automáticamente el costo de funciones de biblioteca o de código que no fue envuelto explícitamente con temporizadores. Para ese nivel de detalle siguen siendo necesarias herramientas como `perf`, Google Performance Tools, Callgrind y `perf annotate`.
 
 ## 7. Resultados de Brayan
 
 Pendiente de agregar sus archivos, tiempos promedio, overhead y comparación con las herramientas del ejercicio B.
 
 ## 8. Comparación grupal
-
 | Integrante | Región con mayor tiempo | Tiempo promedio por llamada | Overhead observado | Coincide con B |
 |---|---|---:|---:|---|
 | Alejandro | `profile_metrics` | 329.849 ms | No apreciable (-1.39 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
 | Angie | `profile_metrics` | 635.408 ms | No apreciable (-0.88 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
-| Milagro | Pendiente | Pendiente | Pendiente | Pendiente |
+| Milagro | `profile_metrics` | 509.280 ms | No apreciable (+1.03 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
 | Brayan | Pendiente | Pendiente | Pendiente | Pendiente |
