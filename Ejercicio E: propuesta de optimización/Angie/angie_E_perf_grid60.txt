@@ -1,0 +1,256 @@
+instrumentation,target_generation,13.536
+instrumentation,source_preparation,32.9838
+Generated two H-shaped rail point clouds with 100000 points each.
+Canvas: 10000 x 10000 coordinate units
+Applied random non-rigid source deformation: amplitude=60 units, rms=56.8088 units
+Synthetic target->source transform: theta=18.00000 deg, tx=2409.80239, ty=-1730.36755
+Collimating source cloud onto target cloud...
+instrumentation,grid_construction,5.03254
+initial_transform theta_deg=0.00000 t=(0.00000, 0.00000) mse=99058.33498
+initial_profile_metrics: centroid_target=(4860.49523, 5000.24865) centroid_source=(5453.57319, 4524.80851) centroid_distance=760.12157 rmse_s2t=3019.03806 rmse_t2s=834.42445 chamfer_rmse=2214.81997 median=152.29343 p95=966.09606 max=14142.13562 coverage=80.11200%
+instrumentation,nearest_neighbors,1,635.83512
+instrumentation,rigid_transform,1,0.49562
+instrumentation,profile_metrics,1,1202.26912
+iter= 1 matches=81634 match_rmse=159.40155279 profile_score=0.16365778 score_variation=3.75822926% transform_step=0.61077361% delta_theta_deg=-0.29549858 delta_t=(-39.08232125, 31.03828336)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5437.75458804, 4527.66035727) centroid_distance=746.03489746 rmse_s2t=2892.80863329 rmse_t2s=829.51879633 chamfer_rmse=2127.96184438 median=150.63037834 p95=944.83679941 max=14142.13562373 coverage=80.31550000%
+instrumentation,nearest_neighbors,2,601.08241100
+instrumentation,rigid_transform,2,0.52287900
+instrumentation,profile_metrics,2,1353.32138700
+iter= 2 matches=81825 match_rmse=158.43828336 profile_score=0.15551168 score_variation=4.97752252% transform_step=0.60024181% delta_theta_deg=-0.29217647 delta_t=(-38.55395729, 29.96358215)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5422.21836731, 4529.83567915) centroid_distance=732.68086733 rmse_s2t=2748.53610214 rmse_t2s=758.18466752 chamfer_rmse=2016.09705803 median=149.29498773 p95=924.07577175 max=14142.13562373 coverage=80.55450000%
+instrumentation,nearest_neighbors,3,572.76630900
+instrumentation,rigid_transform,3,0.52582200
+instrumentation,profile_metrics,3,1090.47513200
+iter= 3 matches=82026 match_rmse=157.60665334 profile_score=0.14847166 score_variation=4.52700479% transform_step=0.58607071% delta_theta_deg=-0.28580868 delta_t=(-37.83761569, 28.89730839)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5406.90938786, 4531.62907590) centroid_distance=719.84216619 rmse_s2t=2618.39738618 rmse_t2s=717.52560145 chamfer_rmse=1919.74579837 median=148.28170682 p95=904.51539305 max=14142.13562373 coverage=80.87300000%
+instrumentation,nearest_neighbors,4,566.86420700
+instrumentation,rigid_transform,4,0.59310400
+instrumentation,profile_metrics,4,1081.34502500
+iter= 4 matches=82211 match_rmse=156.81465983 profile_score=0.14148935 score_variation=4.70278691% transform_step=0.54050820% delta_theta_deg=-0.26291474 delta_t=(-35.00337980, 26.64726633)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5392.64342276, 4533.41788361) centroid_distance=707.89312078 rmse_s2t=2490.70066359 rmse_t2s=671.02695113 chamfer_rmse=1823.98834491 median=147.48924386 p95=886.31117754 max=14142.13562373 coverage=81.31450000%
+instrumentation,nearest_neighbors,5,559.28095800
+instrumentation,rigid_transform,5,0.52887100
+instrumentation,profile_metrics,5,1076.25697800
+iter= 5 matches=82419 match_rmse=156.40957150 profile_score=0.13373762 score_variation=5.47866780% transform_step=0.51411168% delta_theta_deg=-0.25039010 delta_t=(-32.97702973, 25.69363625)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5379.42646866, 4535.50174338) centroid_distance=696.61992829 rmse_s2t=2352.33464363 rmse_t2s=603.27453872 chamfer_rmse=1717.18060272 median=146.68592805 p95=869.56006017 max=14142.13562373 coverage=81.80500000%
+instrumentation,nearest_neighbors,6,549.88322200
+instrumentation,rigid_transform,6,0.54307500
+instrumentation,profile_metrics,6,1022.37692000
+iter= 6 matches=82739 match_rmse=156.77663834 profile_score=0.12549526 score_variation=6.16308588% transform_step=0.53923973% delta_theta_deg=-0.26401229 delta_t=(-34.43597838, 26.86772774)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5365.83237178, 4537.53363669) centroid_distance=685.17940505 rmse_s2t=2187.59665360 rmse_t2s=597.23702985 chamfer_rmse=1603.47609721 median=145.97111450 p95=852.85610379 max=14142.13562373 coverage=82.35500000%
+instrumentation,nearest_neighbors,7,533.82340000
+instrumentation,rigid_transform,7,0.63795700
+instrumentation,profile_metrics,7,1034.83973100
+iter= 7 matches=83176 match_rmse=157.65906415 profile_score=0.11439361 score_variation=8.84627040% transform_step=0.59520203% delta_theta_deg=-0.29503096 delta_t=(-37.79035956, 29.21028380)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5351.33571964, 4539.05381198) centroid_distance=673.51694222 rmse_s2t=1984.37663703 rmse_t2s=513.53288574 chamfer_rmse=1449.39067583 median=145.11413318 p95=834.58641361 max=14142.13562373 coverage=82.89350000%
+instrumentation,nearest_neighbors,8,653.59376400
+instrumentation,rigid_transform,8,0.58547800
+instrumentation,profile_metrics,8,1058.74675800
+iter= 8 matches=83789 match_rmse=159.20835777 profile_score=0.10197942 score_variation=10.85216674% transform_step=0.68391345% delta_theta_deg=-0.34230059 delta_t=(-43.22444841, 33.15456623)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5335.13315385, 4540.15722815) centroid_distance=661.03349510 rmse_s2t=1733.12147626 rmse_t2s=507.42943631 chamfer_rmse=1276.94844929 median=143.93251415 p95=814.77664527 max=14142.13562373 coverage=83.41000000%
+instrumentation,nearest_neighbors,9,551.81530500
+instrumentation,rigid_transform,9,0.42950300
+instrumentation,profile_metrics,9,958.34674000
+iter= 9 matches=84406 match_rmse=160.24962913 profile_score=0.08363485 score_variation=17.98850421% transform_step=0.73223601% delta_theta_deg=-0.36825484 delta_t=(-46.16227698, 35.28990458)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5318.04124810, 4541.06330845) centroid_distance=648.22800220 rmse_s2t=1382.79932606 rmse_t2s=414.24398215 chamfer_rmse=1020.71838744 median=142.02061854 p95=793.80879255 max=14142.13562373 coverage=83.80350000%
+instrumentation,nearest_neighbors,10,571.53048500
+instrumentation,rigid_transform,10,0.50999300
+instrumentation,profile_metrics,10,1035.57242800
+iter=10 matches=84859 match_rmse=160.12200382 profile_score=0.06620779 score_variation=20.83707585% transform_step=0.74941934% delta_theta_deg=-0.37898812 delta_t=(-46.90990979, 36.13147637)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5301.05205412, 4541.91903466) centroid_distance=635.73292953 rmse_s2t=1021.45525680 rmse_t2s=406.55655858 chamfer_rmse=777.38635085 median=139.57377073 p95=771.77818680 max=14142.13562373 coverage=84.18200000%
+instrumentation,nearest_neighbors,11,506.58385400
+instrumentation,rigid_transform,11,0.52847100
+instrumentation,profile_metrics,11,937.11148300
+iter=11 matches=85171 match_rmse=159.16414218 profile_score=0.05316127 score_variation=19.70541228% transform_step=0.75488621% delta_theta_deg=-0.38406976 delta_t=(-46.94467080, 36.32534875)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5284.43382064, 4542.60816044) centroid_distance=623.82589902 rmse_s2t=786.38424410 rmse_t2s=302.80700150 chamfer_rmse=595.85747437 median=137.21386769 p95=748.74890535 max=14142.13562373 coverage=84.75850000%
+instrumentation,nearest_neighbors,12,486.86547100
+instrumentation,rigid_transform,12,0.65246200
+instrumentation,profile_metrics,12,964.51078500
+iter=12 matches=85466 match_rmse=158.17934531 profile_score=0.04839526 score_variation=8.96520676% transform_step=0.73444868% delta_theta_deg=-0.37533552 delta_t=(-45.11761075, 35.71920386)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5268.96051310, 4543.61265841) centroid_distance=612.66656686 rmse_s2t=691.61088460 rmse_t2s=293.45907432 chamfer_rmse=531.24563245 median=135.40278559 p95=724.73349838 max=14142.13562373 coverage=85.50200000%
+instrumentation,nearest_neighbors,13,586.16429800
+instrumentation,rigid_transform,13,0.49115300
+instrumentation,profile_metrics,13,955.36752200
+iter=13 matches=85855 match_rmse=157.96011777 profile_score=0.04446706 score_variation=8.11690500% transform_step=0.71970595% delta_theta_deg=-0.37066629 delta_t=(-43.74710340, 35.01844287)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5254.49715352, 4544.44952365) centroid_distance=602.48681731 rmse_s2t=613.55629982 rmse_t2s=284.55374412 chamfer_rmse=478.23747571 median=133.88136420 p95=699.80872043 max=14142.13562373 coverage=86.23750000%
+instrumentation,nearest_neighbors,14,582.11745700
+instrumentation,rigid_transform,14,0.67620100
+instrumentation,profile_metrics,14,969.09105400
+iter=14 matches=86506 match_rmse=159.21976273 profile_score=0.04105161 score_variation=7.68086130% transform_step=0.77418989% delta_theta_deg=-0.40052701 delta_t=(-47.23310726, 37.09213134)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5238.90344444, 4544.69927550) centroid_distance=592.21450078 rmse_s2t=546.23049878 rmse_t2s=275.22942367 chamfer_rmse=432.50375342 median=132.06163372 p95=672.32160582 max=14142.13562373 coverage=86.86950000%
+instrumentation,nearest_neighbors,15,439.39141100
+instrumentation,rigid_transform,15,0.75564400
+instrumentation,profile_metrics,15,915.69887500
+iter=15 matches=87238 match_rmse=160.37615536 profile_score=0.03749272 score_variation=8.66928691% transform_step=0.87035491% delta_theta_deg=-0.45240156 delta_t=(-53.76719590, 40.40094446)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5220.85704283, 4543.59313946) centroid_distance=581.71719665 rmse_s2t=475.35295594 rmse_t2s=264.91207347 chamfer_rmse=384.79789461 median=130.01064587 p95=640.75737991 max=14142.13562373 coverage=87.47000000%
+instrumentation,nearest_neighbors,16,485.76515700
+instrumentation,rigid_transform,16,0.62027700
+instrumentation,profile_metrics,16,845.53795600
+iter=16 matches=87953 match_rmse=160.57095515 profile_score=0.03353991 score_variation=10.54287636% transform_step=0.94790351% delta_theta_deg=-0.49285626 delta_t=(-59.28309400, 42.98791636)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5200.46413941, 4541.50388490) centroid_distance=570.98653586 rmse_s2t=394.19703546 rmse_t2s=253.96543912 chamfer_rmse=331.57936232 median=127.60781956 p95=605.79071887 max=14142.13562373 coverage=88.25650000%
+instrumentation,nearest_neighbors,17,499.02573900
+instrumentation,rigid_transform,17,0.57348700
+instrumentation,profile_metrics,17,832.03204900
+iter=17 matches=88475 match_rmse=159.07791915 profile_score=0.02971791 score_variation=11.39538949% transform_step=0.91590401% delta_theta_deg=-0.47670981 delta_t=(-57.88958311, 40.57980840)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5180.18014023, 4538.65832877) centroid_distance=561.48381240 rmse_s2t=311.84076128 rmse_t2s=243.81869575 chamfer_rmse=279.90374845 median=125.35487228 p95=572.32792549 max=14142.13562373 coverage=89.42450000%
+instrumentation,nearest_neighbors,18,401.30062400
+instrumentation,rigid_transform,18,0.55816300
+instrumentation,profile_metrics,18,684.69732200
+iter=18 matches=89279 match_rmse=159.22252601 profile_score=0.02754316 score_variation=7.31796631% transform_step=0.92667427% delta_theta_deg=-0.48678400 delta_t=(-58.43668981, 40.28306576)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5160.11639710, 4534.76739543) centroid_distance=553.57533100 rmse_s2t=267.09109209 rmse_t2s=234.07304181 chamfer_rmse=251.12530774 median=123.10373545 p95=538.91265104 max=14142.13562373 coverage=90.50700000%
+instrumentation,nearest_neighbors,19,369.25855600
+instrumentation,rigid_transform,19,0.48708600
+instrumentation,profile_metrics,19,724.17861300
+iter=19 matches=90366 match_rmse=160.35681391 profile_score=0.02679388 score_variation=2.72037644% transform_step=1.04201554% delta_theta_deg=-0.55359657 delta_t=(-64.99386007, 44.98263197)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5138.69629167, 4529.68165943) centroid_distance=546.65265767 rmse_s2t=259.52190418 rmse_t2s=223.66894805 chamfer_rmse=242.25958915 median=120.78295993 p95=503.87906014 max=14142.13562373 coverage=91.29150000%
+instrumentation,nearest_neighbors,20,385.47195000
+instrumentation,rigid_transform,20,0.48485500
+instrumentation,profile_metrics,20,674.51582900
+iter=20 matches=91093 match_rmse=158.65205233 profile_score=0.02533109 score_variation=5.45941996% transform_step=1.09393861% delta_theta_deg=-0.59204504 delta_t=(-67.20114391, 46.35831107)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5118.02579170, 4522.70024842) centroid_distance=542.56287260 rmse_s2t=231.46017841 rmse_t2s=213.36189737 chamfer_rmse=222.59505098 median=117.96490452 p95=470.75877747 max=1204.75843518 coverage=92.68300000%
+instrumentation,nearest_neighbors,21,357.67826000
+instrumentation,rigid_transform,21,0.50319500
+instrumentation,profile_metrics,21,686.72294700
+iter=21 matches=92140 match_rmse=158.21021501 profile_score=0.02470896 score_variation=2.45601892% transform_step=1.13227268% delta_theta_deg=-0.62487427 delta_t=(-68.20881101, 47.30923293)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5098.83671029, 4513.92384833) centroid_distance=541.58884635 rmse_s2t=224.11086487 rmse_t2s=203.47174540 chamfer_rmse=214.04021927 median=113.78215674 p95=443.47690667 max=1155.07380153 coverage=94.22300000%
+instrumentation,nearest_neighbors,22,356.26659900
+instrumentation,rigid_transform,22,0.74729000
+instrumentation,profile_metrics,22,659.74855900
+iter=22 matches=93381 match_rmse=158.06643289 profile_score=0.02416059 score_variation=2.21931174% transform_step=1.22933281% delta_theta_deg=-0.68882075 delta_t=(-72.59898785, 51.21208246)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5080.13519475, 4503.51202183) centroid_distance=543.12889475 rmse_s2t=217.47219930 rmse_t2s=193.63766657 chamfer_rmse=205.90010125 median=108.51592504 p95=422.02364942 max=1103.97659655 coverage=94.95500000%
+instrumentation,nearest_neighbors,23,356.13020300
+instrumentation,rigid_transform,23,0.61225900
+instrumentation,profile_metrics,23,642.58680700
+iter=23 matches=93846 match_rmse=152.92353040 profile_score=0.02371731 score_variation=1.83472642% transform_step=1.23539316% delta_theta_deg=-0.70169623 delta_t=(-71.66986711, 51.25620402)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5063.23708122, 4492.21609571) centroid_distance=546.99299704 rmse_s2t=211.96943839 rmse_t2s=184.40345092 chamfer_rmse=198.66513978 median=102.18620067 p95=410.27176913 max=1055.50643547 coverage=95.23150000%
+instrumentation,nearest_neighbors,24,426.24726400
+instrumentation,rigid_transform,24,0.58793600
+instrumentation,profile_metrics,24,689.47900400
+iter=24 matches=93936 match_rmse=145.84135160 profile_score=0.02334311 score_variation=1.57775210% transform_step=1.14075199% delta_theta_deg=-0.65463311 delta_t=(-64.93787782, 47.63558714)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5049.29343695, 4481.70970133) centroid_distance=551.84002077 rmse_s2t=206.99992824 rmse_t2s=176.07677562 chamfer_rmse=192.16139207 median=95.48435667 p95=403.92332462 max=1013.07868508 coverage=95.33500000%
+instrumentation,nearest_neighbors,25,412.39703700
+instrumentation,rigid_transform,25,0.51041200
+instrumentation,profile_metrics,25,744.93997900
+iter=25 matches=93930 match_rmse=139.19794949 profile_score=0.02294345 score_variation=1.71211981% transform_step=1.07036778% delta_theta_deg=-0.61425294 delta_t=(-60.56332074, 45.19154444)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5036.48625837, 4472.51259081) centroid_distance=556.30764372 rmse_s2t=200.97691451 rmse_t2s=168.37153283 chamfer_rmse=185.39241251 median=88.41981712 p95=400.43956145 max=974.34614576 coverage=95.38650000%
+instrumentation,nearest_neighbors,26,424.65438200
+instrumentation,rigid_transform,26,0.72025000
+instrumentation,profile_metrics,26,749.59923300
+iter=26 matches=93940 match_rmse=133.31512103 profile_score=0.02253843 score_variation=1.76526904% transform_step=0.96942160% delta_theta_deg=-0.55465750 delta_t=(-54.99957173, 41.07490225)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5024.54662126, 4464.62248072) centroid_distance=560.18591231 rmse_s2t=194.39425692 rmse_t2s=161.47675509 chamfer_rmse=178.69508885 median=82.03036575 p95=397.82996692 max=940.00739429 coverage=95.40550000%
+instrumentation,nearest_neighbors,27,442.37075100
+instrumentation,rigid_transform,27,0.67731200
+instrumentation,profile_metrics,27,885.25180400
+iter=27 matches=93952 match_rmse=128.41968524 profile_score=0.02217747 score_variation=1.60156271% transform_step=0.86288980% delta_theta_deg=-0.49567865 delta_t=(-49.10422027, 35.95037125)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5013.87834394, 4456.93784002) centroid_distance=564.54673854 rmse_s2t=187.95554702 rmse_t2s=155.51603562 chamfer_rmse=172.50003622 median=75.49349958 p95=396.87265163 max=910.85642126 coverage=95.38950000%
+instrumentation,nearest_neighbors,28,444.27392200
+instrumentation,rigid_transform,28,0.55266300
+instrumentation,profile_metrics,28,658.10340300
+iter=28 matches=93941 match_rmse=123.83918134 profile_score=0.02182154 score_variation=1.60488920% transform_step=0.87302387% delta_theta_deg=-0.50243911 delta_t=(-50.34773701, 35.24210377)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(5002.42117983, 4448.04135489) centroid_distance=570.15425638 rmse_s2t=180.77588657 rmse_t2s=149.91665940 chamfer_rmse=166.06463491 median=68.58928257 p95=395.41203670 max=882.91819967 coverage=95.44400000%
+instrumentation,nearest_neighbors,29,358.89874300
+instrumentation,rigid_transform,29,0.61526000
+instrumentation,profile_metrics,29,594.31122800
+iter=29 matches=94062 match_rmse=119.40536577 profile_score=0.02144582 score_variation=1.72178340% transform_step=0.95770140% delta_theta_deg=-0.55101975 delta_t=(-55.71319500, 37.99580662)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4989.25329095, 4437.72337896) centroid_distance=577.07306541 rmse_s2t=172.37929923 rmse_t2s=144.43345476 chamfer_rmse=159.02145399 median=61.57323390 p95=382.54239960 max=853.95386071 coverage=95.70600000%
+instrumentation,nearest_neighbors,30,378.72168600
+instrumentation,rigid_transform,30,0.51552100
+instrumentation,profile_metrics,30,609.77231300
+iter=30 matches=94642 match_rmse=116.60229750 profile_score=0.02093871 score_variation=2.36463124% transform_step=1.15767901% delta_theta_deg=-0.65619385 delta_t=(-68.23201084, 46.79607009)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4971.51707021, 4427.08902713) centroid_distance=583.81316035 rmse_s2t=161.23683377 rmse_t2s=138.20848668 chamfer_rmse=150.16474679 median=53.69414306 p95=355.76583883 max=819.44035257 coverage=96.03600000%
+instrumentation,nearest_neighbors,31,345.38673700
+instrumentation,rigid_transform,31,0.61001600
+instrumentation,profile_metrics,31,589.76183200
+iter=31 matches=95328 match_rmse=110.66982994 profile_score=0.02020726 score_variation=3.49329052% transform_step=1.43629561% delta_theta_deg=-0.79930362 delta_t=(-85.51073704, 60.02985657)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4947.28058636, 4417.33530014) centroid_distance=589.33833684 rmse_s2t=146.31813092 rmse_t2s=130.08390699 chamfer_rmse=138.43918935 median=44.42348375 p95=322.29032318 max=777.56675268 coverage=96.36950000%
+instrumentation,nearest_neighbors,32,322.08300400
+instrumentation,rigid_transform,32,0.75693400
+instrumentation,profile_metrics,32,603.24153000
+iter=32 matches=95969 match_rmse=99.04012787 profile_score=0.01946688 score_variation=3.66391307% transform_step=1.47840013% delta_theta_deg=-0.81567578 delta_t=(-87.86075615, 63.51104777)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4921.80257409, 4409.97048870) centroid_distance=593.45336946 rmse_s2t=131.62805861 rmse_t2s=122.07188500 chamfer_rmse=126.93992855 median=33.76212136 p95=296.29031786 max=737.04643082 coverage=96.62750000%
+instrumentation,nearest_neighbors,33,331.58278500
+instrumentation,rigid_transform,33,0.65784200
+instrumentation,profile_metrics,33,601.26215700
+iter=33 matches=96451 match_rmse=85.27271987 profile_score=0.01896018 score_variation=2.60290170% transform_step=1.26135926% delta_theta_deg=-0.69538732 delta_t=(-74.23407337, 55.29207601)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4900.72761855, 4405.20431115) centroid_distance=596.40289545 rmse_s2t=121.34957097 rmse_t2s=116.67793671 chamfer_rmse=119.03667353 median=23.37604440 p95=282.41192009 max=704.71645680 coverage=96.75950000%
+instrumentation,nearest_neighbors,34,308.70058000
+instrumentation,rigid_transform,34,0.52598700
+instrumentation,profile_metrics,34,601.35464200
+iter=34 matches=96713 match_rmse=74.42947068 profile_score=0.01872906 score_variation=1.21897068% transform_step=0.89567112% delta_theta_deg=-0.49813178 delta_t=(-51.58317838, 39.86259733)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4887.25776572, 4402.29383955) centroid_distance=598.55341615 rmse_s2t=116.22055628 rmse_t2s=114.23191781 chamfer_rmse=115.23052709 median=15.57095068 p95=275.20660772 max=684.51686471 coverage=96.83400000%
+instrumentation,nearest_neighbors,35,362.53126300
+instrumentation,rigid_transform,35,0.52707500
+instrumentation,profile_metrics,35,584.97651000
+iter=35 matches=96833 match_rmse=68.74004245 profile_score=0.01863090 score_variation=0.52411053% transform_step=0.61820466% delta_theta_deg=-0.34763830 delta_t=(-34.56786151, 28.06170789)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4879.31040449, 4400.62158801) centroid_distance=599.92218456 rmse_s2t=113.80272663 rmse_t2s=113.19672307 chamfer_rmse=113.50012930 median=10.98034822 p95=272.83088141 max=671.89262548 coverage=96.86800000%
+instrumentation,nearest_neighbors,36,303.15838600
+instrumentation,rigid_transform,36,0.53574500
+instrumentation,profile_metrics,36,589.92539900
+iter=36 matches=96887 match_rmse=65.98515248 profile_score=0.01858543 score_variation=0.24402761% transform_step=0.44322093% delta_theta_deg=-0.25176748 delta_t=(-24.08691961, 20.46889896)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4874.51340154, 4399.60754462) centroid_distance=600.80466862 rmse_s2t=112.55982234 rmse_t2s=112.71321081 chamfer_rmse=112.63654268 median=8.46187734 p95=269.81568831 max=663.47273865 coverage=96.89300000%
+instrumentation,nearest_neighbors,37,314.74346800
+instrumentation,rigid_transform,37,0.62973500
+instrumentation,profile_metrics,37,621.94885800
+iter=37 matches=96923 match_rmse=64.67611742 profile_score=0.01855820 score_variation=0.14653496% transform_step=0.33681799% delta_theta_deg=-0.19269846 delta_t=(-17.79992022, 15.87657338)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4871.48274451, 4399.06519272) centroid_distance=601.28385808 rmse_s2t=111.82692898 rmse_t2s=112.43543783 chamfer_rmse=112.13159618 median=7.06005176 p95=268.65160784 max=657.29712220 coverage=96.90400000%
+instrumentation,nearest_neighbors,38,263.96757700
+instrumentation,rigid_transform,38,0.63933200
+instrumentation,profile_metrics,38,610.30898700
+iter=38 matches=96947 match_rmse=63.97087231 profile_score=0.01853863 score_variation=0.10547063% transform_step=0.26591929% delta_theta_deg=-0.15299182 delta_t=(-13.68698144, 12.77920343)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4869.52481451, 4398.82084206) centroid_distance=601.49558997 rmse_s2t=111.34627262 rmse_t2s=112.25558415 chamfer_rmse=111.80185285 median=6.27778890 p95=267.50669665 max=652.50379912 coverage=96.91650000%
+instrumentation,nearest_neighbors,39,303.04364100
+instrumentation,rigid_transform,39,0.64850500
+instrumentation,profile_metrics,39,540.12708900
+iter=39 matches=96969 match_rmse=63.62500351 profile_score=0.01852256 score_variation=0.08663100% transform_step=0.22102536% delta_theta_deg=-0.12734546 delta_t=(-11.20049532, 10.77447291)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4868.08909179, 4398.76146523) centroid_distance=601.53512229 rmse_s2t=110.99685424 rmse_t2s=112.12995724 chamfer_rmse=111.56484429 median=5.81919251 p95=267.38915982 max=648.53940587 coverage=96.93100000%
+instrumentation,nearest_neighbors,40,290.25788900
+instrumentation,rigid_transform,40,0.64654100
+instrumentation,profile_metrics,40,562.97429200
+iter=40 matches=96986 match_rmse=63.41579803 profile_score=0.01850936 score_variation=0.07131637% transform_step=0.18436780% delta_theta_deg=-0.10641502 delta_t=(-9.20625468, 9.09403611)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4867.04422291, 4398.80645419) centroid_distance=601.47785277 rmse_s2t=110.73793669 rmse_t2s=112.04293998 chamfer_rmse=111.39234942 median=5.52033762 p95=267.17966893 max=645.24774561 coverage=96.93750000%
+instrumentation,nearest_neighbors,41,278.96878700
+instrumentation,rigid_transform,41,0.64870100
+instrumentation,profile_metrics,41,534.08996000
+iter=41 matches=96995 match_rmse=63.22813375 profile_score=0.01849779 score_variation=0.06246039% transform_step=0.15752354% delta_theta_deg=-0.09116669 delta_t=(-7.72337572, 7.86906259)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4866.31388342, 4398.92571055) centroid_distance=601.35109328 rmse_s2t=110.53666401 rmse_t2s=111.97974037 chamfer_rmse=111.26054185 median=5.33989621 p95=266.45489141 max=642.43412917 coverage=96.93800000%
+instrumentation,nearest_neighbors,42,321.32204000
+instrumentation,rigid_transform,42,0.89188700
+instrumentation,profile_metrics,42,584.53110500
+iter=42 matches=96997 match_rmse=63.02645604 profile_score=0.01848852 score_variation=0.05011493% transform_step=0.13811013% delta_theta_deg=-0.08015711 delta_t=(-6.69276260, 6.93701985)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4865.77047804, 4399.05042773) centroid_distance=601.22136843 rmse_s2t=110.37770316 rmse_t2s=111.94055016 chamfer_rmse=111.16187324 median=5.28759341 p95=265.95441852 max=639.99990380 coverage=96.94100000%
+instrumentation,nearest_neighbors,43,283.21720300
+instrumentation,rigid_transform,43,0.68007200
+instrumentation,profile_metrics,43,573.91219600
+iter=43 matches=97008 match_rmse=63.00479399 profile_score=0.01848115 score_variation=0.03989400% transform_step=0.11988334% delta_theta_deg=-0.06961644 delta_t=(-5.78327053, 6.04024465)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4865.32861920, 4399.17534027) centroid_distance=601.09274531 rmse_s2t=110.25305805 rmse_t2s=111.92012622 chamfer_rmse=111.08971929 median=5.22345899 p95=265.40140526 max=637.90780257 coverage=96.93650000%
+instrumentation,nearest_neighbors,44,269.17364800
+instrumentation,rigid_transform,44,0.63957400
+instrumentation,profile_metrics,44,575.53185200
+iter=44 matches=97009 match_rmse=62.88593582 profile_score=0.01847500 score_variation=0.03327479% transform_step=0.10333518% delta_theta_deg=-0.06013277 delta_t=(-4.92798525, 5.23914188)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4865.01495348, 4399.30582557) centroid_distance=600.95982335 rmse_s2t=110.15454299 rmse_t2s=111.91047841 chamfer_rmse=111.03598182 median=5.16990671 p95=265.22162297 max=636.11145415 coverage=96.93350000%
+instrumentation,nearest_neighbors,45,294.60905700
+instrumentation,rigid_transform,45,0.53577100
+instrumentation,profile_metrics,45,530.18472400
+iter=45 matches=97001 match_rmse=62.67258676 profile_score=0.01847086 score_variation=0.02240522% transform_step=0.09067067% delta_theta_deg=-0.05289130 delta_t=(-4.31393154, 4.58480799)
+  profile_metrics: centroid_target=(4860.49522574, 5000.24865258) centroid_source=(4864.76006756, 4399.39773186) centroid_distance=600.86605647 rmse_s2t=110.07984331 rmse_t2s=111.91434510 chamfer_rmse=111.00088410 median=5.14003190 p95=264.94802846 max=634.57572402 coverage=96.93600000%
+Expected source->target transform: theta=-18.00000 deg, tx=-1757.14529, ty=2390.34723
+Recovered source->target transform: theta=-18.00595 deg, tx=-1720.41095, ty=1781.98006
+Finished after 45 iterations with profile_score=0.01847086
+
+ Performance counter stats for './point_cloud_collimation':
+
+         56 192,56 msec task-clock                       #    0,999 CPUs utilized             
+             1 104      context-switches                 #   19,647 /sec                      
+                25      cpu-migrations                   #    0,445 /sec                      
+            38 723      page-faults                      #  689,113 /sec                      
+   201 380 958 508      cycles                           #    3,584 GHz                       
+   177 219 136 739      instructions                     #    0,88  insn per cycle            
+    25 612 129 640      branches                         #  455,792 M/sec                     
+     1 111 315 829      branch-misses                    #    4,34% of all branches           
+
+      56,231969456 seconds time elapsed
+
+      56,084089000 seconds user
+       0,107005000 seconds sys
+
+
