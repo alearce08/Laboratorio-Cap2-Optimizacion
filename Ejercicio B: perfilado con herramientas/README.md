@@ -335,15 +335,20 @@ que incluye el trabajo dentro de la función.
 
 ### 4.2 ¿Coinciden los resultados de las tres herramientas?
 
-Pendiente.
+Sí, se puede observar que `GridIndex::nearest()` es la región dominante en las 3 herramientas. Las diferencias
+solo son producto de la ejecución diferente en el cálculo de cada herramienta.
 
 ### 4.3 ¿Qué costo tiene exportar los archivos de reconstrucción?
 
-Pendiente.
+Genera más muestras y el tiempo de ejecución sube levemente debido a todas las nuevas instrucciones respecto a la
+ejecución normal que deben aplicarse para la obtención de todos los archivos generados.
 
 ### 4.4 ¿Qué herramienta dio la evidencia más clara para decidir dónde optimizar?
 
-Pendiente.
+Considero que fue `perf` principalmente. Es la herramienta más directa y a la que personalmente estoy acostumbrado. Tanto con
+`perf` como con `GPT` se puede ver de forma muy apreciable cuál es el hotspot para tomar la decisión de qué optimizar. Valgrind
+por su parte es un poco más complejo pero no le quita utilidad y más bien ofrece una mayor resolución y profundidad a la búsqueda
+de funciones poco eficientes.
 
 ---
 
