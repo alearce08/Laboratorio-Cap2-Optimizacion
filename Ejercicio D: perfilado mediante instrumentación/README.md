@@ -268,7 +268,44 @@ Los temporizadores manuales no indican qué instrucciones concentran el trabajo 
 
 ## 7. Resultados de Brayan
 
-Pendiente de agregar sus archivos, tiempos promedio, overhead y comparación con las herramientas del ejercicio B.
+Las mediciones completas se encuentran en la carpeta [Brayan/](Brayan/). El resumen de los tiempos está en [average_by_region_iterations.csv](average_by_region_iterations.csv).
+
+### 7.1 Tiempos por región
+
+| Región | Llamadas por ejecución | Promedio por llamada | Tiempo acumulado estimado |
+|---|---:|---:|---:|
+| `profile_metrics` | 46 | 490.002 ms | 22540.093 ms |
+| `nearest_neighbors` | 45 | 243.656 ms | 10964.530 ms |
+| `export_reconstruction` | 1 | 3430.907 ms | 3430.907 ms |
+| `render_motion_frame` | 29 | 14.320 ms | 415.287 ms |
+| `estimate_transform` | 45 | 1.022 ms | 45.998 ms |
+| `prepare_source` | 1 | 21.904 ms | 21.904 ms |
+| `generate_target` | 1 | 7.679 ms | 7.679 ms |
+| `grid_index_icp` | 1 | 4.480 ms | 4.480 ms |
+
+### 7.2 Comparación con las herramientas externas
+
+Como se puede observar en los resultados, `profile_metrics` cuenta con mayor tiempo promedio por llamada. Sabiendo que esta función 
+realiza búsquedas de vecinos mediante `GridIndex::nearest`, podemos confirmar que estos resultados son congruentes con los obtenidos
+en las otras herramientas para el inciso B con perf, GPY y Valgrind.
+
+### 7.3 Overhead de la instrumentación
+
+La obtención de estos resultados se hizo mediante 8 repeticiones de cada binario con 'perf stat' sin pausas entre ellas.
+Se comparan los tiempos de `elapsed` y `user` para confirmar que los picos de hasta x2 en sus tiempo no son producto de
+la interferencia de otros procesos como el navegador. Consultando a la IA, existe la posibilidad de que la causa más probable 
+sea throttling térmico de la CPU. Los resultados de tiempo se pueden ver en la carpeta [Brayan/](Brayan/), para el código original
+se ve el archivo [elapsed_times.csv](elapsed_times.csv) mientras que para el instrumentado se puede ver en 
+[elapsed_times_instrumentado.csv](elapsed_times_instrumentado.csv).
+
+| Métrica | Original (n=7) | Instrumentado (n=4) | Overhead |
+|---|---|---|---|
+| `elapsed` promedio | 37.986 s | 39.542 s | +1.555 s (+4.09%) |
+| `user` promedio | 37.373 s | 38.959 s | +1.586 s (+4.24%) |
+
+El promedio de tiempo no cambia mucho entre métricas, sin embargo sí hay una diferencia notable entre versiones del código lo 
+cual no es normal. Sería esperable ver diferencias de unos pocos milisegundos o segundos, pero los picos vistos en los resultados de
+las pruebas sugieren que algo imperceptible por mi persona está sucediendo.
 
 ## 8. Comparación grupal
 | Integrante | Región con mayor tiempo | Tiempo promedio por llamada | Overhead observado | Coincide con B |
@@ -276,4 +313,4 @@ Pendiente de agregar sus archivos, tiempos promedio, overhead y comparación con
 | Alejandro | `profile_metrics` | 329.849 ms | No apreciable (-1.39 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
 | Angie | `profile_metrics` | 635.408 ms | No apreciable (-0.88 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
 | Milagro | `profile_metrics` | 509.280 ms | No apreciable (+1.03 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
-| Brayan | Pendiente | Pendiente | Pendiente | Pendiente |
+| Brayan | `profile_metrics` | 490.002 ms | - | Sí; incluye búsquedas con `GridIndex::nearest` |
