@@ -371,14 +371,8 @@ Para facilitar la identificación de `estimate_rigid_transform` y
 `addr2line` se comprobó que código correspondiente a estas regiones había sido
 incorporado dentro de `main` por las optimizaciones del compilador.
 
-Las observaciones sobre posibles limitaciones por cómputo o memoria se basan en
-los patrones observados en el ensamblador. No demuestran por sí solas que una
-región esté limitada exclusivamente por uno de estos factores.
-
-
-
 Modificar la estructura utilizada para la búsqueda de
-vecinos. Actualmente `GridIndex::nearest` utiliza una tabla hash para localizar
+vecinos. `GridIndex::nearest` utiliza una tabla hash para localizar
 las celdas y posteriormente obtiene índices que se utilizan para acceder a los
 puntos candidatos.
 
@@ -459,7 +453,7 @@ Agregar referencias a las regiones revisadas mediante líneas, símbolos o fragm
 | Integrante | Función analizada con mayor detalle | Instrucción con mayor porcentaje local en esa función | Porcentaje | Coincidencia con B | Primera propuesta |
 |---|---|---|---:|---|---|
 | Alejandro | `GridIndex::nearest` | `comisd %xmm0,%xmm1` | 11,88 % | Sí | Agrupar las coordenadas de los puntos por celda. |
-| Angie | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| Angie | `GridIndex::nearest`  | `subsd (%rax),%xmm0` | 16,00 % | Sí | Modificar la estructura utilizada para la búsqueda de vecinos |
 | Milagro | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 | Brayan | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 
