@@ -117,29 +117,50 @@ presentó menor IPC y una mayor proporción de fallos de predicción de saltos.
 
 ## Resultados de Milagro
 
-| Tamaño de celda | `nearest_neighbors` (ms) | `profile_metrics` (ms) | Iteraciones | `profile_score` |
-|---:|---:|---:|---:|---:|
-| 45.0 | 302.379 | 616.797 | 45 | 0.01847086 |
-| 60.0 | 284.824 | 527.213 | 45 | 0.01847086 |
-| **90.0 (original)** | **250.712** | **507.303** | **45** | **0.01847086** |
-| 120.0 | 298.300 | 611.272 | 45 | 0.01847086 |
-| 180.0 | 434.721 | 902.340 | 45 | 0.01847086 |
+### Instrumentación manual
 
-El valor de `90.0` corresponde al promedio de cinco ejecuciones. Los demás
-valores corresponden a pruebas exploratorias individuales.
+Los valores corresponden al promedio de cinco ejecuciones.
+
+| Región | 90.0 original (ms) | 60.0 modificado (ms) | Variación |
+|---|---:|---:|---:|
+| `nearest_neighbors` | 250.712 | 285.421 | +13.84 % |
+| `profile_metrics` | 507.303 | 526.270 | +3.74 % |
+| `grid_construction` | 3.145 | 3.918 | +24.58 % |
+
+Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y
+`profile_score = 0.01847086`.
+
+### `perf stat`
+
+| Métrica | 90.0 original | 60.0 modificado | Variación |
+|---|---:|---:|---:|
+| Tiempo total | 34.918 s | 38.417 s | +10.02 % |
+| Ciclos | 121,278,543,474 | 133,444,240,095 | +10.03 % |
+| Instrucciones | 206,054,097,633 | 181,083,041,987 | -12.12 % |
+| IPC | 1.7 | 1.4 | -17.65 % |
+| Branch misses | 530,278,452 | 884,148,995 | +66.74 % |
+| Branch-miss rate | 1.9 % | 3.3 % | +1.4 pp |
+
+Al igual que en el equipo de Angie, la versión con `60.0` ejecutó menos
+instrucciones pero necesitó más ciclos, con menor IPC y una mayor proporción
+de fallos de predicción de saltos. En este procesador (con núcleos híbridos),
+`perf` solo registró contadores del tipo `cpu_atom`; los eventos `cpu_core`
+no se contabilizaron.
 
 ### Conclusión
 
-Los tamaños evaluados no mejoraron el rendimiento respecto al valor original
-de `90.0`.
+La hipótesis no se confirmó. Reducir `GRID_CELL_SIZE` de `90.0` a `60.0`
+mantuvo el resultado de la colimación (mismo `profile_score` y mismas 45
+iteraciones), pero aumentó el tiempo de ejecución.
 
-Los resultados son consistentes con un compromiso entre consultar más celdas
-cuando estas son pequeñas y evaluar más candidatos cuando son grandes. Para
-los valores probados, `90.0` presentó el menor tiempo.
+La instrumentación manual mostró un aumento de 13.84 % en
+`nearest_neighbors`, mientras que `perf` mostró un aumento de 10.02 % en el
+tiempo total. Ambas técnicas coinciden en la dirección del efecto, aunque con
+magnitudes distintas, lo cual es consistente con que miden cosas diferentes
+(tiempo de una región específica contra tiempo total del programa).
 
-Por lo tanto, la hipótesis de mejorar el rendimiento modificando el tamaño de
-celda **no se confirmó para los valores evaluados**.
-
+Para este caso, el tamaño original de `90.0` presentó mejor rendimiento que
+el tamaño alternativo evaluado, igual que en el equipo de Angie.
 ---
 
 ## Conclusión
