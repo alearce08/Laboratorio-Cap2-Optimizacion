@@ -1,4 +1,6 @@
-# Ejercicio C: perfilado mediante revisión de ensamblador
+<p align="justify">
+
+# Ejercicio C: perfilado mediante revisión de ensamblador 
 
 En este ejercicio revisamos el ensamblador del programa base y usamos `perf annotate` para relacionar las instrucciones con los hotspots encontrados en el ejercicio B.
 
@@ -163,39 +165,230 @@ La anotación permite ubicar ese trabajo dentro del bucle de candidatos. Los por
 
 Primero probaríamos cambiar la organización de los puntos en la estructura de vecinos, guardando juntas las coordenadas de los puntos de cada celda. Actualmente se lee un índice y después se accede al punto en otra posición del vector. Agrupar los puntos por celda permitiría recorrer sus coordenadas consecutivamente y podría mejorar la localidad de memoria. La propuesta se enfoca en la región donde coinciden las tres herramientas y donde aparecen las instrucciones con más muestras. La mejora todavía debe comprobarse: habría que medir tanto la construcción de la estructura como las búsquedas y verificar que se conserve el resultado de la alineación.
 
-En este inciso no se modificó el programa.
 
 ## 3. Resultados de Angie
 
-### 3.1. Equipo y evidencias
+### 3.1. Evidencias
 
-**Pendiente:** indicar procesador, sistema operativo, compilador, versión de perf, evento analizado y enlaces a los archivos de la carpeta `Angie`.
+Archivos:
+
+- [Ensamblador](Angie/point_cloud_collimation.s)
+- [Anotación de perf](Angie/point_cloud_collimation.annotate.txt)
+
+La ejecución analizada con `perf annotate` contiene 196 863 muestras para el evento `cycles:P`. Los porcentajes mostrados por la herramienta corresponden a `percent: local period`, por lo que indican cómo se distribuyen las muestras dentro de la región anotada y no el porcentaje total de ejecución del programa.
 
 ### 3.2. Revisión de las cinco regiones
 
-Completar según el ensamblador generado en este equipo:
+#### GridIndex::nearest
 
-| Región | Instrucciones o llamadas costosas | Acceso contiguo o indirecto | Saltos condicionales | Posible limitación por cómputo o memoria |
-|---|---|---|---|---|
-| `GridIndex::nearest` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `compare_profiles` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `estimate_rigid_transform` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `add_random_deformation` | Pendiente | Pendiente | Pendiente | Pendiente |
-| `render_motion_frame` | Pendiente | Pendiente | Pendiente | Pendiente |
+Esta función realiza la búsqueda del punto más cercano. Primero determina las celdas que deben revisarse mediante la tabla hash y después recorre los candidatos almacenados en ellas.
 
-Agregar referencias a las regiones revisadas mediante líneas, símbolos o fragmentos del ensamblador.
+El acceso a los candidatos es indirecto: se obtiene un índice desde la celda y este índice se utiliza posteriormente para acceder al vector de puntos. Esto puede observarse en instrucciones como `movslq` para obtener el índice y `shl` para calcular la posición del punto.
+
+El cálculo de la distancia utiliza operaciones escalares de punto flotante. En particular, aparecen instrucciones `subsd`, `mulsd` y `addsd` correspondientes al cálculo de:
+
+```cpp
+const double ex = query.x - candidate.x;
+const double ey = query.y - candidate.y;
+const double d2 = ex * ex + ey * ey;
+```
+
+Después, `comisd` compara la distancia obtenida con la mejor distancia encontrada. También aparece una división entera `div` durante el acceso a la tabla hash y saltos condicionales para controlar la búsqueda y el recorrido de candidatos.
+
+Por lo tanto, esta región presenta una combinación de cálculo de distancias, accesos indirectos a memoria, operaciones de la tabla hash y control de flujo dentro de los bucles.
+
+#### compare_profiles
+
+Esta región compara los dos perfiles mediante búsquedas de vecinos en ambas direcciones. Para ello construye índices espaciales y utiliza `nearest_neighbor_distances`, lo que hace que parte de su trabajo dependa directamente de `GridIndex::nearest`.
+
+En el ensamblador se identificaron llamadas a `hypot` e instrucciones `sqrtsd`, asociadas al cálculo de distancias y métricas. Los vectores utilizados para almacenar puntos y resultados presentan recorridos secuenciales en varias partes de la función, mientras que las búsquedas de vecinos introducen accesos indirectos.
+
+Por esta razón, `compare_profiles` combina operaciones matemáticas, recorridos de vectores y el costo de las búsquedas espaciales.
+
+#### estimate_rigid_transform
+
+Con la optimización `-O2`, esta función no permaneció como una región independiente en el ensamblador, ya que parte de su código fue incorporado en `main`.
+
+La región procesa las correspondencias entre puntos para obtener los parámetros de la transformación. El cálculo utiliza sumas, restas y multiplicaciones sobre las coordenadas, además de operaciones trigonométricas. En el ensamblador optimizado se localizaron llamadas relacionadas con `cos` y `sin`.
+
+Los datos de las correspondencias se recorren principalmente de forma secuencial. Debido a este patrón de acceso y a las operaciones matemáticas realizadas, esta región presenta un comportamiento principalmente orientado al cálculo, aunque esta observación no constituye por sí sola una medición de que esté limitada por cómputo.
+
+#### add_random_deformation
+
+Con `-O2`, esta función también fue incorporada en otras regiones del programa y no aparece como un símbolo independiente.
+
+En el ensamblador se localizaron llamadas a `sin` y `exp` asociadas con los cálculos de las deformaciones. También se observaron operaciones de raíz cuadrada en el código relacionado con los cálculos matemáticos del programa.
+
+Los puntos y parámetros de deformación se procesan mediante bucles, con operaciones matemáticas repetidas para modificar las coordenadas. Los accesos son más regulares que los observados en la búsqueda mediante tabla hash de `GridIndex::nearest`.
+
+Por ello, esta región presenta principalmente trabajo aritmético y llamadas a funciones matemáticas dentro de los recorridos.
+
+#### render_motion_frame
+
+Esta región prepara la representación gráfica del movimiento. En el ensamblador aparece como una versión optimizada identificada mediante `.constprop.0`.
+
+La función trabaja sobre el búfer de la imagen y utiliza las coordenadas de los puntos para determinar las posiciones donde deben dibujarse. La inicialización del búfer presenta un patrón regular, mientras que las escrituras de los píxeles dependen de las coordenadas calculadas y no necesariamente ocurren de manera consecutiva.
+
+También se realizan operaciones para transformar y redondear coordenadas antes de dibujar. Por tanto, esta región combina procesamiento de coordenadas con accesos de escritura al búfer de imagen.
+
+#### Ubicación de las regiones
+
+Las siguientes ubicaciones corresponden al ensamblador generado en el equipo de Angie:
+
+| Región | Ubicación observada |
+|---|---|
+| `GridIndex::nearest` | Inicio en la dirección `0xb970`; el bucle de candidatos comienza alrededor de `0xbb40`. |
+| `compare_profiles` | Región principal desde la línea 19220 del archivo `.s`, identificada como `.constprop.0`. |
+| `estimate_rigid_transform` | Con `-O2` su código aparece incorporado en `main`; no permanece como función independiente. |
+| `add_random_deformation` | Con `-O2` su código aparece incorporado en otras regiones; no permanece como función independiente. |
+| `render_motion_frame` | Región principal desde la línea 1397 del archivo `.s`, identificada como `.constprop.0`. |
+
+Para facilitar la identificación de `estimate_rigid_transform` y `add_random_deformation` se utilizó adicionalmente una compilación auxiliar sin optimización. El análisis de rendimiento, sin embargo, se realizó sobre la compilación requerida con `-O2`.
+
+Las clasificaciones relacionadas con cómputo y memoria se utilizan únicamente para describir los patrones observados en el ensamblador; no demuestran por sí solas que una función esté limitada exclusivamente por alguno de estos factores.
 
 ### 3.3. ¿Qué instrucciones concentran más muestras?
 
-**Pendiente:** incluir función, evento, instrucciones, porcentajes y explicación. Indicar si los porcentajes son locales o globales.
+En `GridIndex::nearest`, las instrucciones con mayores porcentajes locales observados mediante `perf annotate` fueron:
+
+| Dirección | Instrucción | Porcentaje local | Operación |
+|---|---|---:|---|
+| `0xbb55` | `subsd (%rax),%xmm0` | 16,00 % | Calcula la diferencia entre una coordenada de la consulta y del candidato. |
+| `0xbb66` | `addsd %xmm1,%xmm0` | 9,43 % | Suma los dos términos utilizados para obtener la distancia al cuadrado. |
+| `0xbb70` | `comisd %xmm0,%xmm1` | 8,60 % | Compara la distancia calculada con la mejor encontrada. |
+| `0xbb5e` | `mulsd %xmm0,%xmm0` | 7,54 % | Calcula el cuadrado de una de las diferencias. |
+| `0xbacf` | `div %r9` | 6,75 % | Realiza una división utilizada durante el acceso a la tabla hash. |
+| `0xbb4e` | `shl $0x4,%rax` | 5,71 % | Calcula el desplazamiento para acceder al punto candidato. |
+| `0xbb91` | `jne bb40` | 5,69 % | Controla la continuación del recorrido de candidatos. |
+| `0xbb40` | `movslq (%rdx),%rax` | 3,64 % | Obtiene el índice del candidato. |
+| `0xbb62` | `mulsd %xmm1,%xmm1` | 3,31 % | Calcula el cuadrado de la segunda diferencia. |
+| `0xbb59` | `subsd 0x8(%rax),%xmm1` | 2,83 % | Calcula la diferencia de la segunda coordenada. |
+
+La mayor concentración individual aparece en `subsd (%rax),%xmm0`, con 16,00 %. Sin embargo, las muestras no se concentran en una única operación: están distribuidas entre el acceso al candidato, el cálculo de la distancia, la comparación del resultado, el recorrido del bucle y el manejo de la tabla hash.
+
+Esto permite observar que el costo de `GridIndex::nearest` proviene del conjunto de operaciones ejecutadas repetidamente durante cada búsqueda, y no solamente de una instrucción aislada.
+
+Los porcentajes son locales a la región mostrada por `perf annotate`. No deben interpretarse como porcentajes del tiempo total del programa ni como la latencia individual de cada instrucción.
 
 ### 3.4. ¿Coinciden con el hotspot del ejercicio B?
 
-**Pendiente:** comparar con los resultados de Angie del ejercicio B.
+Sí. En el ejercicio B, `perf report` mostró a `GridIndex::nearest` como la función dominante, con 97,76 % en `Self` y 98,15 % en `Children`. Callgrind también concentró aproximadamente 83,45 % de las instrucciones registradas directamente en esta función.
+
+El análisis de ensamblador permite precisar dónde se concentra ese trabajo. Las instrucciones con mayor cantidad de muestras pertenecen al recorrido de candidatos y al cálculo de sus distancias, junto con operaciones asociadas al acceso a la tabla hash.
+
+Por lo tanto, el resultado de `perf annotate` es consistente con el hotspot encontrado previamente: `GridIndex::nearest` continúa siendo la región principal sobre la cual tendría sentido investigar optimizaciones.
 
 ### 3.5. ¿Qué cambio intentaríamos primero?
 
-**Pendiente:** proponer un cambio y justificarlo con las mediciones y el ensamblador.
+El primer cambio que probaríamos sería reducir el trabajo realizado durante la búsqueda de vecinos. Los resultados muestran que una parte importante de las muestras aparece justamente mientras se obtiene cada candidato, se accede a sus coordenadas y se calcula su distancia.
+
+Una posibilidad sería reorganizar la estructura utilizada para almacenar los puntos de las celdas, buscando que el acceso a los candidatos sea más regular y que se evalúen únicamente los puntos necesarios. Esto atacaría directamente la región identificada como hotspot sin modificar inicialmente otras partes del programa que tienen una contribución menor.
+
+Después del cambio sería necesario repetir las mediciones y comparar tanto el tiempo de ejecución como el resultado de la alineación para determinar si realmente existe una mejora.
+
+
+#### GridIndex::nearest
+
+Esta función realiza la búsqueda del vecino más cercano utilizando una tabla
+hash para localizar las celdas y posteriormente recorrer los puntos candidatos.
+En el ensamblador aparecen instrucciones `subsd`, `mulsd` y `addsd` para
+calcular la distancia al cuadrado entre el punto consultado y cada candidato.
+También aparece `comisd` para comparar la distancia calculada con la mejor
+distancia encontrada.
+El acceso a los puntos es indirecto. Primero se obtiene el índice del candidato
+con una instrucción como `movsxd`, luego se calcula su desplazamiento mediante
+`shl` y finalmente se accede a sus coordenadas. En la búsqueda sobre la tabla
+hash también aparecen accesos mediante buckets y punteros, además de
+instrucciones `div` asociadas al cálculo del bucket.
+Se observan saltos como `jbe`, `je` y `jne` dentro de los recorridos y las
+comparaciones. Por estas características, esta región combina cálculo repetido
+de distancias con accesos irregulares a memoria.
+
+#### compare_profiles
+
+Esta función construye índices espaciales y utiliza
+`nearest_neighbor_distances` para comparar los perfiles. Estas búsquedas
+terminan utilizando `GridIndex::nearest`, por lo que parte de su ejecución
+incluye los accesos indirectos asociados a la búsqueda de vecinos.
+En el ensamblador también aparecen operaciones como `hypot` y `sqrtsd`
+relacionadas con el cálculo de métricas y distancias.
+Los vectores utilizados por la función presentan recorridos secuenciales, pero
+las búsquedas de vecinos introducen accesos indirectos. Por esta razón, esta
+región presenta un comportamiento mixto entre cálculo y acceso a memoria.
+
+#### estimate_rigid_transform
+
+Esta región recorre las correspondencias almacenadas en un `vector<Match>` para
+calcular centroides y acumular operaciones sobre las coordenadas. El recorrido
+es principalmente secuencial y en el ensamblador aparecen sumas, restas y
+multiplicaciones.
+También se identificaron llamadas a `atan2`, `cos` y `sin` para calcular la
+transformación. Los bucles contienen comparaciones y saltos para avanzar entre
+las correspondencias. Debido al acceso secuencial a los datos y a las operaciones matemáticas, esta región parece tener mayor peso de cómputo que de acceso irregular a memoria.
+
+#### add_random_deformation
+
+Esta región recorre los puntos y aplica las deformaciones utilizando operaciones
+matemáticas como `sin`, `exp`, `hypot` y `sqrt`. También aparecen
+multiplicaciones y otras operaciones aritméticas dentro de los bucles.
+Los puntos y las deformaciones se recorren principalmente de forma secuencial.
+Se observan saltos asociados al control de los bucles y a las condiciones
+utilizadas durante la modificación de los puntos.
+La presencia repetida de operaciones matemáticas como `sin` y `exp`, junto con
+un patrón de acceso relativamente regular, hace que esta región parezca estar
+más asociada al cómputo.
+
+#### render_motion_frame
+
+Esta función prepara el frame utilizado para representar el movimiento. En el
+ensamblador aparecen operaciones de inicialización del buffer y llamadas a
+`draw_cloud`, `draw_rect` y `lround`.
+La inicialización del buffer presenta un acceso regular. Los puntos pueden
+recorrerse secuencialmente, aunque las posiciones donde se escriben los píxeles
+dependen de las coordenadas proyectadas y, por tanto, las escrituras no
+necesariamente son consecutivas.
+Esta región combina cálculos de coordenadas y escritura en memoria. No presenta
+la misma concentración de operaciones matemáticas costosas observada en
+`add_random_deformation` ni los accesos mediante tabla hash de
+`GridIndex::nearest`.
+
+#### Ubicación de las regiones
+
+Estas referencias corresponden al archivo `point_cloud_collimation.objdump`
+generado en el equipo de Angie.
+
+| Región | Ubicación observada |
+|---|---|
+| `GridIndex::nearest` | Símbolo principal en `0xb970`; búsqueda hash aproximadamente entre `0xbab7` y `0xbb25`; bucle de candidatos desde `0xbb40`. |
+| `compare_profiles` | Región principal identificada como `compare_profiles(...) [clone .constprop.0]`. |
+| `estimate_rigid_transform` | Con `-O2` no permanece como símbolo independiente. Mediante `addr2line` se localizó código incorporado en `main`. |
+| `add_random_deformation` | Con `-O2` no permanece como símbolo independiente. Mediante `addr2line` se localizaron operaciones incorporadas en `main`, incluyendo `sin` y `exp`. |
+| `render_motion_frame` | Región identificada como `render_motion_frame(...) [clone .constprop.0]`. |
+
+Para facilitar la identificación de `estimate_rigid_transform` y
+`add_random_deformation` se realizó adicionalmente una compilación auxiliar con
+`-O0`. Posteriormente se restauró la compilación requerida con `-O2`. Con
+`addr2line` se comprobó que código correspondiente a estas regiones había sido
+incorporado dentro de `main` por las optimizaciones del compilador.
+
+Las observaciones sobre posibles limitaciones por cómputo o memoria se basan en
+los patrones observados en el ensamblador. No demuestran por sí solas que una
+región esté limitada exclusivamente por uno de estos factores.
+
+
+
+Modificar la estructura utilizada para la búsqueda de
+vecinos. Actualmente `GridIndex::nearest` utiliza una tabla hash para localizar
+las celdas y posteriormente obtiene índices que se utilizan para acceder a los
+puntos candidatos.
+
+El ensamblador y `perf annotate` muestran muestras tanto en las operaciones
+asociadas con la tabla hash como en el acceso a los candidatos y el cálculo
+repetido de sus distancias. Una organización que permita recorrer los puntos de
+cada celda de forma más regular, o que reduzca la cantidad de candidatos
+evaluados, podría disminuir estos costos.
+
+
 
 ## 4. Resultados de Milagro
 
@@ -277,3 +470,4 @@ La conclusión grupal queda pendiente hasta incorporar los resultados de todos.
 ## 7. Referencia
 
 - [Manual de perf annotate: interpretación de porcentajes y opciones](https://man7.org/linux/man-pages/man1/perf-annotate.1.html).
+</p>
