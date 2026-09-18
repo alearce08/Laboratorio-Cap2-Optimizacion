@@ -1,6 +1,26 @@
 # Ejercicio E: propuesta de optimización
 
-## Optimización 1: tamaño de celda de `GridIndex`
+
+## Especificaciones de los equipos
+
+| Especificación | Angie | Milagro | Brayan | Alejandro |
+|---|---|---|---|---|
+| Procesador | Intel Core i5-10210U | Intel Core i7-12700H | AMD Ryzen 7 5700U with Radeon Graphics | Intel Core i9-13900HX |
+| Núcleos / hilos | 4 / 8 | 14 / 20 | 8 / 16 | 24 / 32 |
+| Memoria RAM | 16 GB | 16 GB | 16 GB | 32 GB |
+| Sistema operativo | Ubuntu 22.04.5 LTS | Ubuntu 26.04 LTS | Ubuntu 24.04.5 LTS | Ubuntu 24.04.5 LTS |
+| Arquitectura | x86-64 | x86-64 | x86-64 | x86-64 |
+| Kernel | 6.8.0-138-generic | 7.0.0-31-generic | 7.0.0-31-generic | 7.0.0-31-generic |
+| Compilador | GCC/G++ 11.4 | GCC/G++ 15.2.0 | GCC/G++ 13.3.0 | GCC/G++ 13.3.0 |
+
+Los tiempos absolutos deben interpretarse considerando las diferencias de
+hardware y software entre los equipos. Para evaluar la optimización se compara
+principalmente cada versión modificada contra su versión original en el mismo
+equipo.
+
+---
+
+## Optimización: tamaño de celda de `GridIndex`
 
 ### Cambio realizado
 
