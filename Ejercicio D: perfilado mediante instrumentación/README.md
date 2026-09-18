@@ -271,10 +271,9 @@ Los temporizadores manuales no indican qué instrucciones concentran el trabajo 
 Pendiente de agregar sus archivos, tiempos promedio, overhead y comparación con las herramientas del ejercicio B.
 
 ## 8. Comparación grupal
-
 | Integrante | Región con mayor tiempo | Tiempo promedio por llamada | Overhead observado | Coincide con B |
 |---|---|---:|---:|---|
 | Alejandro | `profile_metrics` | 329.849 ms | No apreciable (-1.39 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
 | Angie | `profile_metrics` | 635.408 ms | No apreciable (-0.88 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
-| Milagro | Pendiente | Pendiente | Pendiente | Pendiente |
+| Milagro | `profile_metrics` | 509.280 ms | No apreciable (+1.03 % observado) | Sí; incluye búsquedas con `GridIndex::nearest`. |
 | Brayan | Pendiente | Pendiente | Pendiente | Pendiente |
