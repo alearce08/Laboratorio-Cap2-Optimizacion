@@ -141,8 +141,7 @@ Las cinco ejecuciones de ambas versiones finalizaron con 45 iteraciones y
 | Branch misses | 530,278,452 | 884,148,995 | +66.74 % |
 | Branch-miss rate | 1.9 % | 3.3 % | +1.4 pp |
 
-En este procesador (con núcleos híbridos), `perf` solo registró contadores
-del tipo `cpu_atom`; los eventos `cpu_core` no se contabilizaron.
+En este procesador (con núcleos híbridos), perf solo registró contadores del tipo cpu_atom; los eventos cpu_core no se contabilizaron.
 ---
 
 ## Conclusión
