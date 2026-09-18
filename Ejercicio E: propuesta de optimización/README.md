@@ -164,6 +164,6 @@ los tamaños alternativos evaluados.
 | Integrante | Original | Modificado | `nearest_neighbors` original (ms) | `nearest_neighbors` modificado (ms) | Tiempo `perf` original (s) | Tiempo `perf` modificado (s) | Hipótesis confirmada |
 |---|---:|---:|---:|---:|---:|---:|---|
 | Angie | 90.0 | 60.0 | 340.733 | 390.102 | 44.455 | 56.451 | No |
-| Milagro | 90.0 | — | — | — | — | — | — |
+| Milagro | 90.0 | 60.0 | 250.712 | 285.421 | 34.918 | 38.417 | No |
 | Brayan | 90.0 | — | — | — | — | — | — |
 | Alejandro | 90.0 | — | — | — | — | — | — |
