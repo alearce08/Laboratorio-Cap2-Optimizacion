@@ -1,0 +1,7 @@
+region,promedio_milliseconds
+estimate_transform,0.332276
+generate_target,9.803069
+grid_index_icp,3.090422
+nearest_neighbors,250.451850
+prepare_source,27.654645
+profile_metrics,509.279703
