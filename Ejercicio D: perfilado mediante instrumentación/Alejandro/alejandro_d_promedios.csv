@@ -1,0 +1,7 @@
+]633;E;echo "region,promedio_milliseconds";49ea7618-1287-49b8-9160-111777f4da74]633;Cregion,promedio_milliseconds
+estimate_transform,0.380957
+generate_target,7.014365
+grid_index_icp,2.736174
+nearest_neighbors,161.651323
+prepare_source,17.527037
+profile_metrics,329.848595
