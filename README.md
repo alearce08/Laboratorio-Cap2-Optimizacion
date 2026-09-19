@@ -98,3 +98,8 @@ Color convention:
 - Red: initial displaced and rotated source cloud.
 - Pale green: previous source positions across the collimation iterations.
 - Green: current aligned source cloud.
+
+### IA Usage
+
+https://chatgpt.com/share/6aadd83b-65ac-83e8-b2ad-bef010838445
+https://claude.ai/chat/6335450a-6d4c-4cb0-8a02-2f0869af2f3e
